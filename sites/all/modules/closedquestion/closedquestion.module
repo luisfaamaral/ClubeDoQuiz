@@ -1,0 +1,1153 @@
+<?php
+/**
+ * @file
+ * Module that makes a ClosedQuestion node-type available.
+ */
+ 
+ 
+define('CLOSEDQUESTION_RIGHT_ACCESS', 'access closedquestions');
+define('CLOSEDQUESTION_RIGHT_CREATE', 'create closedquestion');
+define('CLOSEDQUESTION_RIGHT_EDITOWN', 'edit own closedquestion');
+define('CLOSEDQUESTION_RIGHT_EDITALL', 'edit all closedquestions');
+
+/**
+ * Implements hook_help().
+ */
+function closedquestion_help($path, $arg) {
+  $output = ''; //declare your output variable
+  switch ($path) {
+    case "admin/help#closedquestion":
+      $output = '<p>' . t("A module for closedquestions.") . '</p>';
+      break;
+  }
+  return $output;
+}
+
+/**
+ * Implements closedquestion_init().
+ */
+function closedquestion_init() {
+  // add header
+  $element = array(
+   '#tag' => 'meta',
+   '#attributes' => array( // Set up an array of attributes inside the tag
+     'name' => 'google-site-verification', 
+     'content' => 'Vb6qiqvXh7eWdNQqkVKIdSLkrDelHfYSXizUt-mg_rY'
+   )
+  );
+  drupal_add_html_head($element, 'google_verification');
+  
+  global $user; 
+  $node = menu_get_object();
+  
+  if (!empty($node)) {
+    $nid = $node->nid;
+    $ntype = $node->type;
+  
+    if (stripos(request_uri(), "node") !== false && $user->uid != 1) {
+      drupal_access_denied();
+      module_invoke_all('exit');
+      exit();
+    } 
+    
+    if ($node->type == "closedquestion") {
+      // get number of questions answered in that day
+      $query = "SELECT `qnumber` FROM {day_question_queue} WHERE `uid` = '". $user->uid ."' and `date` = '". date("y-m-d") ."'";
+      $result = db_query($query)->fetchObject();
+  
+      if (!empty($result)) {
+        $tot = $result->qnumber;
+    
+        if ($tot >= 15) {
+          drupal_goto(url("quizcompleto", array('absolute' => TRUE)));
+        }
+      }
+    }
+    
+    // categorias
+    if ($nid == 90) {
+      if (!user_is_logged_in()) {
+        drupal_goto('<front>');
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function closedquestion_permission() {
+  $retval = array(
+    CLOSEDQUESTION_RIGHT_ACCESS => array(
+      'title' => t(CLOSEDQUESTION_RIGHT_ACCESS),
+      'description' => t('TODO Add a description for CLOSEDQUESTION_RIGHT_ACCESS'),
+    ),
+    CLOSEDQUESTION_RIGHT_CREATE => array(
+      'title' => t(CLOSEDQUESTION_RIGHT_CREATE),
+      'description' => t('TODO Add a description for CLOSEDQUESTION_RIGHT_CREATE'),
+    ),
+    CLOSEDQUESTION_RIGHT_EDITOWN => array(
+      'title' => t(CLOSEDQUESTION_RIGHT_EDITOWN),
+      'description' => t('TODO Add a description for CLOSEDQUESTION_RIGHT_EDITOWN'),
+    ),
+    CLOSEDQUESTION_RIGHT_EDITALL => array(
+      'title' => t(CLOSEDQUESTION_RIGHT_EDITALL),
+      'description' => t('TODO Add a description for CLOSEDQUESTION_RIGHT_EDITALL'),
+    ),
+  );
+  return $retval;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function closedquestion_theme() {
+  $themes = array(
+    'closedquestion_node_form' => array(
+      'render element' => 'form',
+      'preprocess functions' => array('closedquestion_node_form_preprocess'),
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_feedback_list' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_feedback_item' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_option' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_option_list' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_inline_option_list' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_mapping_list' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_mapping_item' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_mapping' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_range' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_question_general_text' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_question_balance' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_question_check' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_question_drag_drop' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_inline_choice' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_question_hotspot' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_question_select_order' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_sequence_back_next' => array(
+      'variables' => array(
+        'index' => '',
+        'total' => '',
+        'prevUrl' => '',
+        'nextUrl' => '',
+      ),
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+    'closedquestion_question_sequence_text' => array(
+      'render element' => 'form',
+      'file' => 'closedquestion.theme.inc.php',
+    ),
+  );
+  return $themes;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function closedquestion_menu() {
+  $items['node/%node/cq_text'] = array(
+    'title' => 'Text',
+    'description' => 'Show all text in the question for easy review.',
+    'page callback' => 'closedquestion_text',
+    'page arguments' => array(1),
+    'access callback' => 'closedquestion_access_text',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+  $items['node/%node/cq_users'] = array(
+    'title' => 'Users',
+    'description' => 'Show all users that answered this question and their performance.',
+    'page callback' => 'closedquestion_users',
+    'page arguments' => array(1),
+    'access callback' => 'closedquestion_access_log',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 3,
+  );
+  $items['node/%node/cq_users/%user_uid_optional'] = array(
+    'title' => 'User Log',
+    'description' => 'Show the log of one user.',
+    'page callback' => 'closedquestion_user_log',
+    'page arguments' => array(1, 3),
+    'access callback' => 'closedquestion_access_log',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 3,
+  );
+  $items['closedquestion/parsecontentjs'] = array(
+    'page callback' => 'closedquestion_parse_content_js',
+    'access arguments' => array(CLOSEDQUESTION_RIGHT_CREATE),
+    'type' => MENU_CALLBACK,
+  );
+  $items['closedquestion/nextquestion'] = array(
+    'page callback' => 'closedquestion_get_next_question',
+    'access arguments' => array(CLOSEDQUESTION_RIGHT_ACCESS),
+    'type' => MENU_CALLBACK,
+  );
+  $items['closedquestion/update_score'] = array(
+    'page callback' => 'closedquestion_update_score',
+    'page arguments' => array(1, 2),
+    'access arguments' => array(CLOSEDQUESTION_RIGHT_ACCESS),
+    'type' => MENU_CALLBACK,
+  );
+  $items['startquiz'] = array(
+    'page callback' => 'closedquestion_start_quiz',
+    'access arguments' => array(CLOSEDQUESTION_RIGHT_ACCESS),
+    'type' => MENU_CALLBACK,
+  );
+  $items['closedquestion/avoidbackpage'] = array(
+    'page callback' => 'closedquestion_avoid_back_page',
+    'access arguments' => array(CLOSEDQUESTION_RIGHT_ACCESS),
+    'type' => MENU_CALLBACK,
+  );
+  $items['sudoku/checkresult'] = array(
+    'page callback' => 'sudoku_check_result',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  $items['create_new_phase'] = array(
+    'page callback' => 'create_new_phase',
+    'page arguments' => array(1,2),
+    'access arguments' => array(CLOSEDQUESTION_RIGHT_ACCESS),
+    'type' => MENU_CALLBACK,
+  );
+  
+  return $items;
+}
+
+/**
+ * Menu item access callback - determine if the text tab is accessible.
+ */
+function closedquestion_access_text($node) {
+  $is_question = (isset($node->question) && $node->question instanceof CqQuestionInterface);
+  return $is_question && user_access(CLOSEDQUESTION_RIGHT_CREATE) && node_access('view', $node);
+}
+
+/**
+ * Menu item access callback - determine if the logs are accessible.
+ */
+function closedquestion_access_log($node) {
+  $is_question = (isset($node->question) && $node->question instanceof CqQuestionInterface);
+  return $is_question && user_access(CLOSEDQUESTION_RIGHT_CREATE) && node_access('view', $node);
+}
+
+/**
+ * Menu callback - show all the text for a single question.
+ */
+function closedquestion_text($node) {
+  drupal_set_title(t('Text of: @title', array('@title' => $node->title)), PASS_THROUGH);
+  $retval = $node->question->getAllText();
+  return $retval;
+}
+
+/**
+ * Menu callback - show view with all the users that answered a single question.
+ */
+function closedquestion_users($node) {
+  // add view html to page contents
+  $retval = '<h2>' . t('Users that answered question %nodename', array('%nodename' => $node->title)) . '</h2>';
+  $retval .= views_embed_view('closedquestionusers', 'default', $node->nid);
+  return $retval;
+}
+
+/**
+ * Menu callback - show view with the log of how a single user answered a single question.
+ */
+function closedquestion_user_log($node, $user) {
+  // add view html to page contents
+  $retval = '<h2>' . t('The log of how user %name answered question %nodename', array('%name' => $user->name, '%nodename' => $node->title)) . '</h2>';
+  $retval .= views_embed_view('closedquestionuserlog', 'default', $node->nid, $user->uid);
+  return $retval;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function closedquestion_views_api() {
+  return array('api' => 3.0);
+}
+
+/**
+ * Implements hook_user_cancel().
+ */
+function closedquestion_user_cancel($edit, $account, $method) {
+  if (TRUE) {
+    db_delete('cq_user_answer')
+      ->condition('uid', $account->uid)
+      ->execute();
+  }
+}
+
+/**
+ * Implements hook_node_info().
+ */
+function closedquestion_node_info() {
+  $retval = array(
+    'closedquestion' => array(
+      'name' => t('Closed Question'),
+      'base' => 'closedquestion',
+      'description' => t('Create a closed question.'),
+      'body_label' => t('Question XML'),
+    ),
+  );
+  return $retval;
+}
+
+/**
+ * Implements hook_form().
+ */
+function closedquestion_form(&$node) {
+  $type = node_type_get_type($node);
+
+  // Add title if required
+  if ($type->has_title) {
+    $helpLink = theme('advanced_help_topic', array('module' => 'closedquestion', 'topic' => 'gettingstarted'));
+    $form['title'] = array(
+      '#type' => 'textfield',
+      '#title' => check_plain($type->title_label),
+      '#required' => TRUE,
+      '#default_value' => $node->title,
+      '#weight' => -5,
+    );
+    $form['title']['#prefix'] = $helpLink;
+  }
+
+  $form['parse_content'] = array(
+    '#type' => 'hidden',
+    '#default_value' => '',
+    '#input' => TRUE,
+  );
+  return $form;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function closedquestion_menu_alter(&$items) {
+  $items['user/%user/track'] ['access callback' ] = FALSE;
+  $items['user/%user/sociallogin'] ['access callback' ] = FALSE;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function closedquestion_form_alter(&$form, &$form_state, $form_id) {
+  global $user;
+  
+  // Since the body field is not available in hook_form, we have to modify it
+  // here.
+  if ($form['#form_id'] == 'closedquestion_node_form') {
+    drupal_add_library('system', 'ui.draggable');
+    drupal_add_library('system', 'ui.resizable');
+
+    $libPath = library_get_path('jquery-json', array('jquery.json.min.js', 'jquery.json.js'), FALSE);
+    $type = 'file';
+    if (!$libPath) {
+      $libPath = 'http://other.wmmrc.nl/ClosedQuestion/jquery.json.min.js';
+      $type = 'external';
+    }
+    drupal_add_js($libPath, array('type' => $type, 'weight' => JS_LIBRARY + 8));
+
+    $libPath = library_get_path('jquery-jstree', array('jquery.jstree.min.js', 'jquery.jstree.js'), FALSE);
+    $type = 'file';
+    if (!$libPath) {
+      $libPath = 'http://other.wmmrc.nl/ClosedQuestion/jquery.jstree.js';
+      $type = 'external';
+    }
+    drupal_add_js($libPath, array('type' => $type, 'weight' => JS_LIBRARY + 8));
+
+    $libPath = library_get_path('jsDraw2D', array('jsDraw2D.js'), FALSE);
+    $type = 'file';
+    if (!$libPath) {
+      $libPath = 'http://jsdraw2d.jsfiction.com/jsDraw2D.js';
+      $type = 'external';
+    }
+    drupal_add_js($libPath, array('type' => $type, 'weight' => JS_LIBRARY + 8));
+
+    $path = drupal_get_path('module', 'closedquestion');
+
+    drupal_add_js($path . '/assets/xmlEditor.js', array('weight' => JS_LIBRARY + 9));
+    drupal_add_js($path . '/assets/plugins/matchImgEditor.js', array('weight' => JS_LIBRARY + 9));
+    drupal_add_js($path . '/assets/xmlQuestionConfig.js', array('weight' => JS_LIBRARY + 10));
+    drupal_add_js($path . '/assets/xmlQuestionTemplates.js', array('weight' => JS_LIBRARY + 10));
+    drupal_add_js($path . '/assets/xmlQuestionConvert.js', array('weight' => JS_LIBRARY + 11));
+
+    $settings['closedquestion']['basePath'] = base_path() . $path;
+    $settings['closedquestion']['language'] = $form['#node']->language;
+    drupal_add_js($settings, 'setting');
+    drupal_add_css($path . '/assets/closedquestion_xmleditor.css');
+    drupal_add_js('Drupal.behaviors.closedQuestionEditor = { attach: function (context) { setTimeout(function(){CQ_InitialView(context)}, 1); }}', array('type' => 'inline', 'scope' => 'footer', 'weight' => 5));
+
+    $form['body']['#prefix'] = '
+    <a id="xmlJsonEditor_templates" class="xmlJsonEditor_inactiveTab" href="javascript:void(0)" onclick="CQ_ShowTemplates()">' . t('Choose a Template') . '</a>
+    <a id="xmlJsonEditor_tree" class="xmlJsonEditor_inactiveTab" href="javascript:void(0)" onclick="CQ_ShowTree()">' . t('Edit Question') . '</a>
+    <a id="xmlJsonEditor_xml" class="xmlJsonEditor_activeTab" href="javascript:void(0)" onclick="CQ_ShowXML()">' . t('Edit Source') . '</a>
+    <div id="body_field_wrapper">
+      <div class="xmlJsonEditor_container" id="xmlJsonEditor_container">
+        <div class="xmlJsonEditor_tree_container" id="xmlJsonEditor_tree_container"></div>
+        <div class="xmlJsonEditor_divider" id="xmlJsonEditor_divider"></div>
+        <div class="xmlJsonEditor_form_elements" id="xmlJsonEditor_editor"></div>
+      </div>
+      <div class="xmlJsonEditor_templates" id="xmlJsonEditor_template_container">
+        <div>' . t('Create a multiple choice question:') . ' <input type="button" name="mc_create" value="Create" onclick="QC_CreateMC()"></div>
+        <div>' . t('Create a multiple answer question:') . ' <input type="button" name="ma_create" value="Create" onclick="QC_CreateMA()"></div>
+        <div>' . t('Create a multiple answer question with advanced answer mapping:') . ' <input type="button" name="maa_create" value="Create" onclick="QC_CreateMAA()"></div>
+        <div>' . t('Create a Select&Order question:') . ' <input type="button" name="so1_create" value="Create" onclick="QC_CreateSO1()"></div>
+        <div>' . t('Create a Select&Order question with multiple target boxes:') . ' <input type="button" name="so1_create" value="Create" onclick="QC_CreateSO2()"></div>
+        <div>' . t('Create a Hotspot question:') . ' <input type="button" name="hs_create" value="Create" onclick="QC_CreateHS()"></div>
+        <div>' . t('Create a Drag&Drop question:') . ' <input type="button" name="dd_create" value="Create" onclick="QC_CreateDD()"></div>
+        <div>' . t('Create a Fillblanks question with math:') . ' <input type="button" name="fb1_create" value="Create" onclick="QC_CreateFB1()"></div>
+      </div>';
+    $form['body']['#suffix'] = '</div>';
+  }
+  if ($form['#form_id'] == 'user_profile_form') {
+    // remove alteração de senha e email se registrado via social links
+    $query = "SELECT count(*) as tot FROM {authmap} WHERE `uid` = $user->uid";
+    $result = db_query($query)->fetchObject();
+  
+    // if we have last accessed question
+    if (!empty($result)) {
+      $isSocialLogin = $result->tot;
+      
+      if ($isSocialLogin) {
+        unset($form['account']['current_pass']);
+        unset($form['account']['mail']);
+        unset($form['account']['pass']);
+        //var_dump($form['account']['current_pass']);exit;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_delete().
+ */
+function closedquestion_delete($node) {
+  db_delete('cq_user_answer')
+    ->condition('nid', $node->nid)
+    ->execute();
+}
+
+/**
+ * Implements hook_load().
+ */
+function closedquestion_load($nodes) {
+  global $user;
+
+  field_attach_load('node', $nodes);
+
+  foreach ($nodes as $node) {
+    // Create the answer storage
+    $userAnswer = new CqUserAnswerDefault($node->nid, $user->uid);
+
+    // Create the question object. It only checks its type, so other modules
+    // have a change to filter the content first.
+    module_load_include('inc.php', 'closedquestion', 'question/FactoryQuestion');
+    //drupal_set_message(htmlspecialchars(print_r($node->body, TRUE)));
+    $lang = $node->language;
+    if (!isset($node->body[$lang])) {
+      $lang = 'und';
+      if (!isset($node->body[$lang])) {
+        $langs = array_keys($node->body);
+        $lang = $lang[0];
+      }
+    }
+    if (isset($node->body[$lang])) {
+      $node->question = cq_question_from_xml($node->body[$lang][0]['value'], $userAnswer, $node);
+    }
+  }
+}
+
+/**
+ * Implements hook_view().
+ */
+function closedquestion_view($node, $view_mode = 'full') {
+  $body_info = field_info_instance('node', 'body', 'closedquestion');
+  $view_mode_settings = field_view_mode_settings('node', 'closedquestion');
+  if (isset($view_mode_settings[$view_mode]) && $view_mode_settings[$view_mode]['custom_settings'] && isset($body_info['display'][$view_mode])) {
+    $body_weight = $body_info['display'][$view_mode]['weight'];
+  }
+  else {
+    $body_weight = $body_info['display']['default']['weight'];
+  }
+
+  if ($view_mode == 'full') {
+    if (isset($node->question) && $node->question != NULL) {
+      $node->content['question'] = $node->question->getOutput();
+      $node->content['question']['#weight'] = $body_weight;
+    }
+    else {
+      $node->content['question'] = array(
+        '#markup' => t('No question defined.'),
+        '#weight' => $body_weight,
+      );
+    }
+  }
+  // After this we don't want anything being done with the body.
+  unset($node->body);
+  return $node;
+}
+
+/**
+ * Form builder wrapper. Fetches the question-form for the passed node.
+ *
+ * @param object $node
+ *   The node to fetch the form for.
+ *
+ * @see closedquestion_submit_answer()
+ * @see closedquestion_submit_answer_js()
+ * @ingroup forms
+ */
+function closedquestion_get_form_for($form, &$form_state, $node) {
+  $form_state['storage']['node'] = $node;
+  if ($node->question) {
+    $retval = $node->question->getForm($form_state);
+    if (!isset($node->noReset)) {
+      $retval['reset'] = array(
+        '#type' => 'submit',
+        '#value' => 'Reset',
+      );
+    }
+    $retval['#attached']['js'][] = drupal_get_path('module', 'closedquestion') . '/assets/closedquestion.js';
+    $retval['#attached']['css'][] = drupal_get_path('module', 'closedquestion') . '/assets/closedquestion.css';
+    return $retval;
+  }
+}
+
+/**
+ * Form submit handler for question forms.
+ * Receives the form data (the user's answer) and processes it.
+ *
+ * @param array $form
+ *   The form that was submitted.
+ * @param array $form_state
+ *   The form state of the submitted form.
+ */
+function closedquestion_get_form_for_submit($form, &$form_state) {
+  $node = $form_state['storage']['node'];
+  $question = $node->question;
+  if ($form_state['clicked_button']['#value'] == $form_state['values']['reset'] && !isset($node->noReset)) {
+    $question->reset();
+    drupal_set_message(t('Answer Reset.'));
+    $form_state['redirect'] = array(drupal_get_normal_path($_GET['q']), array('fragment' => 'node-' . $node->nid));
+  }
+  else {
+    $question->submitAnswer($form, $form_state);
+    $form_state['rebuild'] = TRUE;
+  }
+}
+
+/**
+ * The AhAh function that receives the form data (the user's answer) and
+ * processes it
+ */
+function closedquestion_submit_answer_js($form, $form_state) {
+  // Find the feedback and process just that.
+  foreach (array_keys($form) AS $key) {
+    $index = strpos($key, 'cq-feedback-wrapper_');
+    if ($index !== FALSE) {
+      $feedback = $form[$key];
+      return $feedback;
+    }
+  }
+  return $form;
+}
+
+/**
+ * Filters the node to convert attachment urls
+ *
+ * @param object $node
+ *   The node (with the attached files)
+ * @param string $text
+ *   The text to convert
+ *
+ * @return String
+ *   The converted text
+ */
+function closedquestion_filter_content(&$node, $text) {
+
+  if (preg_match_all("/\[(attachurl):([^=\\]]+)\]/i", $text, $match)) {
+    $s = array();
+    $r = array();
+    foreach ($match[2] as $key => $value) {
+      // Ensure that we deal with a file object.
+      $file = closedquestion_fileobj($node, $value);
+      if ($file['fid'] != NULL) {
+        $replace = file_create_url($file['uri']);
+      }
+      else {
+        $replace = 'filenotfound';
+      }
+      $s[] = $match[0][$key];
+      $r[] = $replace;
+    }
+    // Perform the replacements and return processed field.
+    $text = str_replace($s, $r, $text);
+  }
+
+  // Temporary ugly fix untill the inline module is ported to D7.
+  // Basicly we just assume the file is an image.
+  // TODO: remove this as soon as the inline module is ported.
+  if (preg_match_all("/\[(inline):([^=\\]]+)\]/i", $text, $match)) {
+    $s = array();
+    $r = array();
+    foreach ($match[2] as $key => $value) {
+      // Ensure that we deal with a file object.
+      $file = closedquestion_fileobj($node, $value);
+      if ($file['fid'] != NULL) {
+        $replace = '<img src="' . file_create_url($file['uri']) . '" alt="' . $file['filename'] . '" />';
+      }
+      else {
+        $replace = 'filenotfound';
+      }
+      $s[] = $match[0][$key];
+      $r[] = $replace;
+    }
+    // Perform the replacements and return processed field.
+    $text = str_replace($s, $r, $text);
+  }
+
+  return $text;
+}
+
+/**
+ * Return the corresponding file object of an Inline tag.
+ */
+function closedquestion_fileobj(&$node, $id) {
+  $lang = $node->language;
+  if (isset($node->attachment[$lang])) {
+    if (is_numeric($id)) {
+      // Numeric file reference (deprecated, see #38359).
+      $n = 1;
+      foreach ($node->attachment[$lang] as $file) {
+        if ($n == $id) {
+          return $file;
+        }
+        ++$n;
+      }
+      return NULL;
+    }
+    else {
+      // Named file reference.
+      foreach ($node->attachment[$lang] as $file) {
+        if ($file['description'] == $id) {
+          return $file;
+        }
+        if ($file['filename'] == $id) {
+          return $file;
+        }
+      }
+      return NULL;
+    }
+  }
+  return NULL;
+}
+
+/**
+ * The AhAh function used by the editor to convert things like image tags to
+ * their resulting url, so the editor can access the image.
+ */
+function closedquestion_parse_content_js() {
+  module_load_include('inc.php', 'closedquestion', 'question/FactoryQuestion');
+
+  // We fetch the form from the cache, because we need the node.
+  $form_state = array('storage' => NULL, 'submitted' => FALSE);
+  $form_build_id = $_REQUEST['form_build_id'];
+  $form = form_get_cache($form_build_id, $form_state);
+
+  // With the node we can filter the content.
+  $result = closedquestion_filter_content($form['#node'], $_REQUEST['parse_content']);
+
+  // Final rendering callback.
+  drupal_json_output(array('status' => TRUE, 'data' => $result));
+}
+
+/**
+ * Wrapper to quickly create a fieldset.
+ */
+function closedquestion_make_fieldset($title, $body, $collapsible = TRUE, $collapsed = FALSE, $render = TRUE) {
+  $fieldset = array(
+    '#type' => 'fieldset',
+    '#title' => $title,
+    '#collapsible' => $collapsible,
+    '#collapsed' => $collapsed,
+  );
+  if (gettype($body) == 'array') {
+    $fieldset['children'] = $body;
+  }
+  else {
+    $fieldset['#children'] = $body;
+  }
+  if ($collapsible) {
+    $fieldset['#attached']['library'][] = array('system', 'drupal.collapse');
+    $fieldset['#attributes']['class'][] = 'collapsible';
+    if ($collapsed) {
+      $fieldset['#attributes']['class'][] = 'collapsed';
+    }
+  }
+
+  if ($render) {
+    return drupal_render($fieldset);
+  }
+  else {
+    return $fieldset;
+  }
+}
+
+/**
+ * Takes a value and tries to fix common mistakes in entering numbers.
+ */
+function closedquestion_fix_number($value) {
+  // There is a , but no .
+  // The student probably thinks , is the decimal separator.
+  if (strpos($value, ',') !== FALSE && strpos($value, '.') === FALSE) {
+    drupal_set_message(t('Please use . not , for decimals.'), 'warning', FALSE);
+    return str_replace(',', '.', $value);
+  }
+  // There is both a , and a .
+  if (strpos($value, ',') !== FALSE && strpos($value, '.') !== FALSE) {
+    drupal_set_message(t('Please do not use , between thousands.'), 'warning', FALSE);
+    return str_replace(',', '', $value);
+  }
+  return $value;
+}
+
+/**
+ * Implements hook_def().
+ * Defined by ImportExportApi.
+ */
+function closedquestion_def() {
+  $defs = array();
+
+  $type = 'closedquestion';
+  $def = importexportapi_node_get_def($type);
+
+  $def['#title'] = 'Closed Question';
+
+  $def['#xml_plural'] = $def['#csv_plural'] = 'closedquestions';
+  $def['revisions']['#csv_plural'] = 'closedquestion-revisions';
+  unset($def['revisions']['teaser']);
+
+  $def['type']['#db_filter'] = array(
+    'values' => array($type),
+  );
+
+  $defs['closedquestion'] = $def;
+
+  return $defs;
+}
+
+/**
+ * Searches for the given library, checking the given filenames. If not found,
+ */
+function library_get_path($base_name, $filenames, $fallback) {
+  $path = libraries_get_path($base_name);
+  foreach ($filenames AS $filename) {
+    $file_path = $path . '/' . $filename;
+    if (file_exists($file_path)) {
+      return $file_path;
+    }
+  }
+  return $fallback;
+}
+
+/*************************************************************
+*********************** LUIS DEFAULT *************************
+*************************************************************/
+
+/* Called by categorias page */
+function closedquestion_start_quiz() {
+  global $user;
+
+  $cid = explode("#",arg(1));
+  $cid = $cid[1];
+  
+  // Update last_categorie_access status to 1
+  $query = "UPDATE {last_categorie_access} SET `status` = 1 WHERE `uid` = ". $user->uid;
+  $result = db_query($query);
+  
+  // Get random question based on the category chosen - $cid
+  $query = get_random_question($cid);
+  $result = db_query($query)->fetchObject();
+  $newpath = $result->alias;
+  $newnid = $result->nid;
+
+  // update last access with the new question id and status 0
+  update_last_access($user->uid, $newnid, 0, NULL);  
+      
+  drupal_goto($newpath);   
+}
+
+/**
+* Submit from question page
+*/
+function closedquestion_update_score () {
+  global $user;
+
+  $qID = $_REQUEST['question_id'];
+  $feedback= $_REQUEST['feedback'];
+  
+  // get last access question
+  $query = "SELECT `preqid` FROM {last_access} WHERE `uid` = $user->uid";
+  $result = db_query($query)->fetchObject();
+  
+  $preqID = ""; $res = 0;
+  if (!empty($result)) {
+    $preqID = $result->preqid;
+
+    //check if this question has already been answered
+    $res = avoid_back_page_sql($qID);
+  }
+
+  // update number of question answered in the day
+    update_day_question($user->uid);
+  
+  if ($res) {
+    $html = "Questão já respondida. Os pontos não foram computados.";
+  } else {
+    //update score
+    if ($feedback == "Resposta correta") {
+      update_user_score($user->uid, 1);
+    } else {
+      update_user_score($user->uid, 0);
+    }
+  
+    // get number of questions answered in that day
+    $query = "SELECT `qnumber` FROM {day_question_queue} WHERE `uid` = '". $user->uid ."' and `date` = '". date("y-m-d") ."'";
+    $result = db_query($query)->fetchObject();
+    $qnumber = $result->qnumber;
+  
+    $toAns = 15 - $qnumber;
+  
+    if ($toAns > 1) {
+      $html = "Ainda faltam ". $toAns ." quest&otilde;es para serem respondidas hoje."; 
+    } else if (toAns == 0) {
+      $html = url('quizcompleto', array('absolute' => TRUE));
+    } else {
+      $html = "Falta ". $toAns ." quest&atilde;o para ser respondida hoje.";
+    }   
+  }
+
+  // update last access
+  update_last_access($user->uid, NULL, 1, $qID);
+  
+  drupal_json_output(array('html' => $html, 'questionAnswered' => $questionAnswered));
+}
+
+
+/******************************* INTERNAL FUNCIONTIONS *****************************
+/**
+* Update last access
+*/
+function update_last_access($uid, $newqid, $status, $qid) {
+  // Select preqid list to avoid repeat question.
+  $query = "SELECT `preqid` FROM {last_access} WHERE `uid` = ". $uid;
+  $result = db_query($query)->fetchObject();
+
+  if (empty($result) || $result == "") {
+    $preqid_dup = $qid .",";
+    $preqid = "";
+  } else {
+    $preqid = $result->preqid;
+    $preqid_dup = $preqid . $qid .",";  
+  }
+  
+  if (is_null($qid)) { 
+    // new qID with status 0
+    $msg = "Update last access:: New Question: User: ". $uid ." - New qID: ". $newqid ." - Date: ". date("y-m-d H:i:s") ;
+    $query = "INSERT INTO {logs} (`msg`) VALUES ('". $msg ."')";
+    $result = db_query($query);
+
+    $result = db_merge('last_access')
+          ->key(array('uid' => $uid))
+          ->fields(array(
+             'uid' => $uid,
+             'qid' => $newqid,
+             'status' => $status,
+             'preqid' => $preqid,
+          ))
+          ->updateFields(array(
+             'qid' => $newqid,
+             'status' => $status,
+          ))
+          ->execute();
+  } else if (is_null($newqid)) {
+    // old qID with status 1
+    $msg = "Update last access:: Question Answered: User: ". $uid ." - qID: ". $qid ." - Date: ". date("y-m-d H:i:s") ;
+    $query = "INSERT INTO {logs} (`msg`) VALUES ('". $msg ."')";
+    $result = db_query($query);
+
+     $result = db_merge('last_access')
+          ->key(array('uid' => $uid))
+          ->fields(array(
+             'uid' => $uid,
+             'qid' => $qid,
+             'status' => $status,
+             'preqid' => $preqid,
+          ))
+          ->updateFields(array(
+             'preqid' => $preqid_dup,
+             'status' => $status,
+          ))
+          ->execute();
+  } 
+}
+
+/**
+* Get random question
+*/
+function get_random_question($tid) {
+  global $user;
+  
+  // new qID with status 0
+  $msg = "Get random question: User: ". $user->uid ." - Category: ". $tid ." - Date: ". date("y-m-d H:i:s") ;
+  $query = "INSERT INTO {logs} (`msg`) VALUES ('". $msg ."')";
+  $result = db_query($query);
+
+  // Select preqid list to avoid repeat question.
+  $query = "SELECT `preqid` FROM {last_access} WHERE `uid` = ". $user->uid;
+  $result = db_query($query)->fetchObject();
+
+  // if we dont have row in database
+  if (empty($result)) {
+    $preqidStt = "";    
+  } else {
+    $preqid = $result->preqid;
+    
+    if (empty($preqid) || $preqid == "") {
+      $preqidStt = "";
+    } else {
+      $preqid = substr($preqid, 0, strlen($preqid) - 1);
+      $preqidStt = " and n.`nid` NOT IN (". $preqid .")";
+    }
+  }
+
+  $query = "SELECT n.nid, u.alias FROM {node} n, {url_alias} u, {taxonomy_index} ti WHERE `type` = 'closedquestion' ". $preqidStt ." and CONCAT('node/', n.`nid`) = u.`source` and ti.`nid` = n.`nid` and ti.`tid` = ". $tid ." ORDER BY RAND() LIMIT 1";
+
+  return $query;
+}
+
+/**
+* Update user score
+*/
+function update_user_score($uid, $correct) {
+  $pontos = $correct * 5;
+  $query = "INSERT INTO {ranking}(`uid`, `qtotal`, `qcorrect`, `ptotal`) VALUES ('". $uid ."','1','". $correct ."','". $pontos ."') ON DUPLICATE KEY UPDATE `qtotal`= `qtotal` + 1, `qcorrect`= `qcorrect` + ". $correct .", `ptotal` = `ptotal` + ". $pontos;
+  $result = db_query($query);
+}
+
+/**
+* Update question accessed
+*/
+function update_question_user($uid, $qID) {
+  $query = "INSERT INTO {question_accessed} (`uid`, `qid`, `qtimes`) VALUES ('". $uid ."','". $qID ."','1') ON DUPLICATE KEY UPDATE `qtimes` = `qtimes` + 1";
+  $result = db_query($query);
+}
+
+/**
+* Update number of question/day
+*/
+function update_day_question($uid) {
+  $query = "INSERT INTO {day_question_queue} (`uid`, `date`, `qnumber`) VALUES ('". $uid ."', '". date("y-m-d") ."', '1') ON DUPLICATE KEY UPDATE `qnumber` = `qnumber` + 1";
+  $result = db_query($query);
+}
+
+function closedquestion_get_next_question () {
+  global $user;
+  
+  // get last access question
+  $query = "SELECT `qid`, `status` FROM {last_access} WHERE `uid` = $user->uid";
+  $result = db_query($query)->fetchObject();
+  
+  // if we have last accessed question
+  if ( !empty($result) ) {
+    $status = $result->status;
+    $qid = $result->qid;
+      
+    // question already answered. get next question.
+    if ( $status == "1" ) {
+      // get next randomic question
+      $query = get_random_question("");
+      $result = db_query($query)->fetchObject();
+      $newpath = $result->alias;
+      $newnid = $result->nid;
+      
+      // update last access
+      update_last_access($user->uid, $newnid, 0, "", "", "4");  
+    } else {
+      // question accessed but not answered yet. Get path of this question.
+      $query = "SELECT u.alias FROM {node} n, {url_alias} u WHERE `type` = 'closedquestion' and `nid` ='". $qid ."' and CONCAT('node/', n.`nid`) = u.`source`";
+      $result = db_query($query)->fetchObject();
+      $newpath = $result->alias;  
+    }
+  }
+  
+  // return next question path
+  drupal_json_output(array('url' => url($newpath, array('absolute' => TRUE))));
+}
+
+/**
+* BACK PAGE HANDLE
+*/
+function closedquestion_avoid_back_page() {
+  global $user;
+  $qID = $_REQUEST['question_id'];
+  
+  //check if this question has already been answered
+  $res = avoid_back_page_sql($qID);
+  
+  drupal_json_output(array('forward' => $res));    
+}
+
+function avoid_back_page_sql($qID) {
+  global $user;
+  $query = "SELECT count(*) as tot FROM {last_access} WHERE `uid` = $user->uid and `preqid` like '%,". $qID .",%'";
+  $result = db_query($query)->fetchObject();
+  
+  if (!empty($result)) {
+    return $result->tot;
+  } else {
+    return 0;
+  } 
+}
+
+/**
+* SUDOKU
+*/
+function sudoku_check_result() {
+  $resultado = $_REQUEST['result'];
+  $key = $_REQUEST['key'];
+  
+  $query = "SELECT n.nid FROM {field_data_field_key} fk, {node} n WHERE fk.`entity_id` = n.`nid` and fk.`field_key_value` = '". $key ."'";
+  $result = db_query($query)->fetchObject();
+  
+  if (!empty($result)) {
+    $node = node_load($result->nid);
+    $resposta = $node->field_resposta['und'][0]['value'];
+
+    if ($resultado == $resposta) {
+      drupal_json_output(array('html' => "<span>Parabéns! Você conseguiu.</span>"));
+    } else {
+      drupal_json_output(array('html' => "<span class='error'>Ops! Algum valor está incorreto.</span>"));
+    }
+  }
+}
+
+/**
+* CONFIGURATION
+*/
+function create_new_phase() {
+  $numberDays= $_REQUEST['numberDays'];
+  $description= $_REQUEST['description'];
+  
+  //Calculate number of questions per category
+  $questionPerCategory = (int)ceil(($numberDays * 15)/9);
+  
+  //Reset all status to 0
+  $query = "UPDATE {node} SET `status`=0 WHERE `type` = 'closedquestion'";
+  $result = db_query($query);
+  
+  //Get x items per category. Set status to 1. Store question id in a variable
+  $query = "SELECT ttd.`tid` FROM {taxonomy_term_data} ttd, {taxonomy_index} ti WHERE ttd.`vid` = '1' and ttd.`tid` = ti.`tid` GROUP BY ttd.`name`";
+  $result = db_query($query);
+  
+  $qArray = "";
+  while ($data = $result->fetchObject()) {
+    if (!empty($data)) {
+    
+      $query2 = "SELECT n.nid FROM {node} n, {taxonomy_index} ti WHERE `type` = 'closedquestion' and ti.`nid` = n.`nid` and ti.`tid` = '$data->tid' ORDER BY RAND() LIMIT $questionPerCategory";
+      $result2 = db_query($query2);
+      
+      while ($data2 = $result2->fetchObject()) {
+        if (!empty($data2)) {
+          $qArray = $qArray . $data2->nid .",";
+          
+          $query3 = "UPDATE {node} SET `status`=1 WHERE `type` = 'closedquestion' and nid = '$data2->nid'";
+          $result3 = db_query($query3);
+        }
+      }
+    }
+  }
+ 
+  //Get last phase
+  $query = "SELECT phase FROM {phase_history} ORDER BY `start_date` desc LIMIT 1";
+  $result = db_query($query)->fetchObject();
+
+  if (!empty($result)) {
+    $phase = $result->phase ;
+    
+    //Get the last phase champion. Store in ranking history table
+    $query = "SELECT * FROM {ranking} ORDER BY `ptotal` desc LIMIT 1";
+    $result = db_query($query)->fetchObject();
+  
+    $query = "INSERT INTO `dpl_ranking_history`(`phase`, `uid`, `qtotal`, `qcorrect`, `ptotal`) VALUES ('". $phase ."','". $result->uid ."','". $result->qtotal ."','". $result->qcorrect ."','". $result->ptotal ."')";
+    $result = db_query($query);
+  }
+
+
+  //Truncate ranking
+  $query = "TRUNCATE TABLE {ranking}";
+  $result = db_query($query);
+  
+  //Truncate last_access
+  $query = "TRUNCATE TABLE {last_access}";
+  $result = db_query($query);
+  
+  //Store questions select variable in the phase_history
+  $qArray = substr($qArray, 0, strlen($qArray) - 1);
+  
+  $query = "INSERT INTO {phase_history}(`questions`, `description`, `start_date`, `end_date`) VALUES ('". $qArray ."','". $description ."', '". date("y-m-d") ."','". date("y-m-d", strtotime("+ $numberDays days")) ."')";
+  $result = db_query($query);
+}
+
+?>

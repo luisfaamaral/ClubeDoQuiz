@@ -1,0 +1,191 @@
+/* Common Form */
+form label {display: inline-block;text-align: right;width: 220px;margin-right: 20px;}
+.form-actions {padding-top: 0px;}
+fieldset#edit-contact {display: none;}
+
+
+ /* Register Form */
+form#user-register-form div.form-item-name div.description,
+form#user-login div.form-item-name div.description,
+form#user-login div.form-item-pass div.description,
+form#user-register-form div.form-item-pass div.description,
+form#user-register-form div.form-item-captcha-response div.description {display: none;}
+form#user-register-form div.password-strength {margin-top: 0px;}
+form#user-register-form div.form-item-pass div.password-suggestions {margin-left: 100px;}
+form#user-register-form div.form-item-pass-pass1 {width: 870px;}
+form#user-register-form div.form-item-pass-pass2 {width: 846px;}
+form#user-register-form div.password-confirm {margin: 0px;width: 213px;}
+form#user-register-form div.form-item-pass-pass1 input#edit-pass-pass1,
+form#user-register-form div.form-item-pass-pass2 input#edit-pass-pass2,
+form#user-register-form div.form-item-field-telefone-und-0-value input#edit-field-telefone-und-0-value {width: 200px;}
+form#user-register-form div.form-item-mail input#edit-mail,
+form#user-register-form div.form-item-name input#edit-name {width: 400px;}
+form#user-register-form div.form-item-field-cidade-und-0-value input#edit-field-cidade-und-0-value,
+form#user-register-form div.form-item-field-estado-und-0-value input#edit-field-estado-und-0-value {width: 300px;}
+form#user-register-form div#edit-actions input#edit-submit {margin-left: 18px;background-image: url("../images/btn_join3.jpg");background-repeat: no-repeat;background-size: 238px 64px;border: none;color: white;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;height: 44px;width: 217px;background-position: -7px 50%;}
+form#user-register-form input {font-size: 16px;}
+form#user-register-form div#edit-sociallogin-links {margin-left: -5%;}
+form#user-register-form div#edit-sociallogin-links label {width: 400px;float: left;}
+form#user-register-form div#edit-account {margin-top: -25px;}
+
+
+/* User Login Form */
+form#user-login div.form-item-name input#edit-name {width: 400px;}
+form#user-login div.form-item-pass input#edit-pass {width: 200px;}
+form#user-login label {width: 120px;}
+form#user-login div#edit-actions input#edit-submit {margin-left: 41px;background-image: url("../images/btn_join3.jpg");background-repeat: no-repeat;background-size: 140px 64px;border: none;color: white;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;height: 44px;width: 121px;background-position: -7px 50%;}
+form#user-login input {font-size: 16px;}
+
+/* User Pass Form */
+form#user-pass div.form-item-name input#edit-name {width: 400px;}
+form#user-pass label {width: 250px;}
+form#user-pass div#edit-actions input#edit-submit {margin-left: 27px;background-image: url("../images/btn_join3.jpg");background-repeat: no-repeat;background-size: 383px 64px;border: none;color: white;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;height: 44px;width: 332px;background-position: -27px 50%;}
+
+
+/* User Login Home Form */
+form#user-login-form label {display: inline-block;text-align: right;width: 85px;margin-right: 10px;}
+form#user-login-form div.form-actions {margin-top: -96px;position: absolute;}
+form#user-login-form div#fbconnect_button {margin-left: 111px;margin-top: -94px;position: absolute;}
+form#user-login-form div#fbconnect_button label,
+form#user-login-form div#fbconnect_button h3 {display: none;}
+form#user-login-form div.item-list {margin-top: 60px;}
+form#user-login-form div#edit-sociallogin-links {margin-top: 82px;position: absolute;margin-left: 105px;}
+form#user-login-form div#edit-sociallogin-links label {display: none;}
+
+/* Quiz Form */
+form#closedquestion-get-form-for input#edit-reset,
+form#closedquestion-get-form-for div.form-item label[for=edit-options] {display: none;}
+form#closedquestion-get-form-for label  {display: inline-block;margin-left: 15px;width: 407px;}
+form#closedquestion-get-form-for fieldset legend {display: none;}
+form#closedquestion-get-form-for fieldset {font-weight: bold;height: 34px;margin-bottom: 19px;margin-top: -19px;width: 250px;color: green;border: none;width:500px;}
+form#closedquestion-get-form-for fieldset div.fieldset-wrapper {margin-left: 53px;margin-top: 12px;}
+form#closedquestion-get-form-for fieldset.error {color: red;}
+form#closedquestion-get-form-for div#next-question {display: inline-block;width: 700px;}
+form#closedquestion-get-form-for div#next-question span.questionday {padding-left: 30px;}
+form#closedquestion-get-form-for div#logout {display: inline-block;width: 196px;}
+form#closedquestion-get-form-for div.form-item-options p {text-align: left}
+form#closedquestion-get-form-for fieldset {background: url("../images/correct.png");background-size:54px 44px;background-repeat: no-repeat;background-position: 3px 0;}
+form#closedquestion-get-form-for fieldset.error {background: url("../images/error.png");background-size:51px 41px;background-repeat: no-repeat;background-position: 3px 1px;}
+form#closedquestion-get-form-for input#edit-submit {background-image: url("../images/btn_join3.jpg");background-repeat: no-repeat;background-size: 175px 48px;border: none;color: white;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;height: 44px;width: 154px;background-position: -7px 50%;display: none;}
+form#closedquestion-get-form-for div#next-question input {background-image: url("../images/btn_join3.jpg");background-repeat: no-repeat;background-size: 231px 62px;border: none;color: white;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;height: 44px;width: 210px;background-position: -7px 50%;}
+body.node-type-closedquestion div.field-name-field-tags {margin-right: 24px;float: right;}
+form#closedquestion-get-form-for input.form-radio {margin-top: 6px;vertical-align: top;}
+
+
+/* Error Messages*/
+div#main div.error.messages {margin-bottom: 25px;}
+
+/* Quiz */
+div#main div#block-system-main div.content span.submitted {display: none;}
+
+/* Complete Quiz */
+body.page-node-38 h1.page-title {display: none;}
+
+/* Block ranking */
+div#block-block-1 h2 {display: none;}
+div#block-block-1 div#pager a {color: blue; font-size: 14px; padding: 0 7px;}
+div#block-block-1 div#pager a.active {color: purple; font-size: 15px;}
+div#block-block-1 div#pager {margin-left: 300px;}
+div#block-block-1 th, div#block-block-1 td {text-align: center;}
+body.front div#block-block-1 table {width: 100%;margin-bottom: 2px;}
+body.front div#block-block-1 {position: relative; margin-left: 65%;margin-top: -100px;}
+body.front div#block-block-1 div#edit-name {color: black;font-weight: bold;text-align: center;}
+body.front div#block-block-1 div#ranking_link {font-size: 12px;text-align: right;background: url("../images/red_arrow.png");background-size:10px 10px;background-repeat: no-repeat;background-position: 43% 7px;width: 100%;}
+body.front.logged-in div#block-block-1 {margin-top: 0px;}
+
+/* Block Patrocinio */
+div#block-views-patrocinio-block div.field-content p {font-size: 11px;text-align: center;}
+div#block-views-patrocinio-block h2 {display: none;}
+div#footer-bottom {margin: auto;width: auto;}
+div#block-views-patrocinio-block div.view-content {margin-left: 21px;padding-top: 12px;}
+div#footer-bottom {background: url("../images/header-bg.jpg") repeat-x scroll left bottom transparent;margin-bottom: -30px;}
+div#block-views-patrocinio-block div.views-row {display: inline-block;margin-left: 10px;}
+div#block-views-patrocinio-block div.views-row img {margin-left: 20%}
+
+/* Block Participar */
+div#block-block-2 h2 {display: none;}
+
+/* Main */
+div#main {min-height: 400px;width: 90%;margin-bottom: 20px;margin-top: 10px;}
+div#main-menu li.last {border-left: 1px solid #CCCCCC;margin-left: 91%;position: absolute!important;}
+#header div#main-menu {width: 98%;margin-top: 0;}
+#header #logo-wrap {margin-bottom: 20px;margin-top: 0px;padding-left: 0px;}
+h1#site-name a img {max-height: 239px;padding-top: 17px;width: 140px;}
+h1#site-name span {font-family: 'ScratchmybackRegular';font-size: 82px;margin-top: 45px;position: absolute;color: #B00000;margin-left: 10px;}
+section.col8 {padding-left: 20px;width: 70%;}
+aside.col4 {width: 25%;}
+body.front div#main h1.page-title {display: none;}
+div#main div.messages.error, 
+div#main div.messages.error h2 {color: red;}
+
+/* Contact Form */
+form#contact-site-form label {width: 110px;}
+form#contact-site-form input {font-size: 16px;}
+form#contact-site-form input#edit-name,
+form#contact-site-form input#edit-mail,
+form#contact-site-form input#edit-subject {width: 400px;}
+form#contact-site-form div.form-item-message label {float: left;margin-right: 27px;}
+form#contact-site-form div.form-item-message div.form-textarea-wrapper {width:600px;display:inline-block}
+form#contact-site-form div.form-item-message div.form-textarea-wrapper textarea {width:100%;}
+form#contact-site-form div.form-item-message div.form-textarea-wrapper div#grippie {display: none;}
+form#contact-site-form input#edit-submit {background-image: url("../images/btn_join3.jpg");background-repeat: no-repeat;background-size: 240px 64px;border: none;color: white;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;height: 44px;width: 210px;background-position: -7px 50%;}
+
+/* Home */
+body.front div.participar {background-image: url("../images/btn_join3.jpg");background-position: 3px 0;background-repeat: no-repeat;background-size: 200px 54px;font-size: 20px;height: 78px;margin-top: 14px;}
+body.front div.participar a {color: white;font-weight: bold;margin-left: 25px;margin-top: 14px;position: absolute;}
+
+/* Categorias */
+div#categorias a {border: solid thick black;border-radius: 1em;box-shadow: 6px 7px 6px #B00000;display: inline-block;float: left;height: 200px;margin-left: 20px;width: 160px;text-align: center;}
+div#categorias {margin-left: 135px;margin-top: 54px;}
+div#categorias a span {display: inline-block;margin-top: 32px;}
+div#categorias a.cat15 span,
+div#categorias a.cat11 span {display: inline-block;margin-top: 25px;}
+div#categorias a.cat9 {background-image: url("../images/9.jpg");background-position: 50% 63%;background-repeat: no-repeat;background-size: 91px auto;border: medium none;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;}
+div#categorias a.cat10 {background-image: url("../images/10.jpg");background-position: 50% 70%;background-repeat: no-repeat;background-size: 91px auto;border: medium none;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;}
+div#categorias a.cat11 {background-image: url("../images/11.jpg");background-position: 50% 88%;background-repeat: no-repeat;background-size: 91px auto;border: medium none;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;}
+div#categorias a.cat12 {background-image: url("../images/12.jpg");background-position: 50% 70%;background-repeat: no-repeat;background-size: 108px auto;border: medium none;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;}
+div#categorias a.cat13 {background-image: url("../images/13.jpg");background-position: 50% 70%;background-repeat: no-repeat;background-size: 118px auto;border: medium none;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;}
+div#categorias a.cat14 {background-image: url("../images/14.jpg");background-position: 50% 63%;background-repeat: no-repeat;background-size: 91px auto;border: medium none;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;}
+div#categorias a.cat15 {background-image: url("../images/15.jpg");background-position: 50% 70%;background-repeat: no-repeat;background-size: 91px auto;border: medium none;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;}
+div#categorias a.cat16 {background-image: url("../images/16.jpg");background-position: 50% 71%;background-repeat: no-repeat;background-size: 91px auto;border: medium none;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;}
+div#categorias a.cat17 {background-image: url("../images/17.jpg");background-position: 50% 69%;background-repeat: no-repeat;background-size: 84px auto;border: medium none;font-family: 'ArchitectsDaughterRegular';font-size: 17px;font-weight: bold;}
+
+/* User profile form */
+form#user-profile-form label,
+form#complete-profile-form label {width: auto;}
+
+/* Rodape */
+div#sitelock_shield_logo {margin-left: 92%;margin-top: -13px;}
+
+/* Configuration page*/
+body.page-node-123 h2 {display: inline-block;}
+body.page-node-123 div#list {margin-left: 20px;}
+body.page-node-123 input#number_days {width:40px;}
+body.page-node-123 input#description {width:200px;}
+body.page-node-123 a#number_days {display:block;margin-top:7px;}
+body.page-node-123 span#number_days,
+body.page-node-123 span#description {display:block;}
+
+/* Sudoku */
+div#big_square {width: 476px;margin-left: 120px;margin-top: 15px;}
+div#big_square div.row {height: 52px;}
+div#big_square div.row div.line {width: 50px;height: 50px;display: inline-block;border: 1px solid black;float: left;color: navy;font-size: 28px;line-height: 45px;text-align: center;}
+div#big_square div.row div#line3,
+div#big_square div.row div#line6,
+div#big_square div.row div#line9 {border-right: 3px solid black;}
+div#big_square div#row3,
+div#big_square div#row6,
+div#big_square div#row9 {border-bottom: 3px solid black;}
+div#big_square div#row1 {border-top: 3px solid black;}
+div#big_square div.row div#line1 {border-left: 3px solid black;}
+div#big_square div.row div.line input {height: 34px;margin-top: -1px;width: 37px;text-align: center;font-size: 24px;border: none;font-family: 'ArchitectsDaughterRegular';}
+div#wrapper_end span {background: url("../images/correct.png");background-size:54px 44px;background-repeat: no-repeat;background-position: 3px 0;color: green;font-weight: bold;height: 50px;line-height: 36px;margin-left: 27px;display: inline-block;padding-left: 63px;}
+div#wrapper_end span.error {background: url("../images/error.png");background-size:51px 41px;background-repeat: no-repeat;background-position: 3px 1px;color: red}
+div#wrapper_end {margin-left: 135px;margin-top: 20px;}
+div.list {float: right;margin-top: -3px;width: 300px;}
+div.list_only {margin-left: 10%;}
+div.list_only p {display: inline-block;}
+div.list_only select {margin-left: 15px;}
+div#sudoku_content h3 {margin-top: 20px;}
+div#sudoku_content {margin-bottom: 40px;}
+div#sudoku_content span.chamada {display: inline-block;font-size: 19px;margin-top: 15px;text-align: center;width: 100%;}

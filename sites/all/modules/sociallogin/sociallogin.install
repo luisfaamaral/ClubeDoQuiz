@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @file
+ * Provides uninstall function for the sociallogin module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function sociallogin_uninstall() {
+  variable_del('sociallogin_apikey');
+  variable_del('sociallogin_apisecret');
+  variable_del('sociallogin_label_string');
+  variable_del('sociallogin_popup_def_ifwidth');
+  variable_del('sociallogin_popup_def_ifheight');
+  variable_del('sociallogin_attach_login_form');
+  variable_del('sociallogin_email_required');
+  variable_del('sociallogin_link_account');
+  variable_del('sociallogin_userlogin_redirect');
+}

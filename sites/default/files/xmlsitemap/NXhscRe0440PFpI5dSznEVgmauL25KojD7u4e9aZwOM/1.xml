@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>http://clubedoquiz.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+<url><loc>http://clubedoquiz.com/tags/atualidades</loc><priority>0.7</priority></url>
+<url><loc>http://clubedoquiz.com/tags/l%C3%B3gica</loc><priority>0.7</priority></url>
+<url><loc>http://clubedoquiz.com/tags/hist%C3%B3ria</loc><priority>0.7</priority></url>
+<url><loc>http://clubedoquiz.com/tags/geografia</loc><priority>0.7</priority></url>
+<url><loc>http://clubedoquiz.com/tags/esportes</loc><priority>0.7</priority></url>
+<url><loc>http://clubedoquiz.com/tags/ci%C3%AAncias-e-tecnologia</loc><priority>0.7</priority></url>
+<url><loc>http://clubedoquiz.com/tags/artes</loc><priority>0.7</priority></url>
+<url><loc>http://clubedoquiz.com/tags/variedades</loc><priority>0.7</priority></url>
+<url><loc>http://clubedoquiz.com/tags/ingl%C3%AAs</loc><priority>0.7</priority></url>
+<url><loc>http://clubedoquiz.com/home</loc><lastmod>2013-01-31T16:44Z</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url>
+<url><loc>http://clubedoquiz.com/configuracao</loc><lastmod>2013-02-14T17:01Z</lastmod><changefreq>always</changefreq><priority>1.0</priority></url>
+<url><loc>http://clubedoquiz.com/sudoku</loc><lastmod>2013-02-14T16:01Z</lastmod><changefreq>hourly</changefreq><priority>1.0</priority></url>
+<url><loc>http://clubedoquiz.com/quizcompleto</loc><lastmod>2013-01-22T13:05Z</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url>
+<url><loc>http://clubedoquiz.com/ranking</loc><lastmod>2013-01-28T15:45Z</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url>
+<url><loc>http://clubedoquiz.com/c6e9cbc3c5b0ea18ac079c001690acda</loc><lastmod>2013-01-23T22:58Z</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>http://clubedoquiz.com/categorias</loc><lastmod>2013-01-29T21:05Z</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url>
+</urlset>
