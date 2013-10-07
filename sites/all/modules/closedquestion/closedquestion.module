@@ -1032,13 +1032,13 @@ function get_random_question($tid) {
     }
 
     $return = db_select('node', 'n')
-    ->condition('n.type', 'closedquestion', '=')
-    ->condition('n.nid', $preqid, 'NOT IN')
-    ->innerJoin('taxonomy_index', 'ti', 'ti.nid = n.nid')
-    ->condition('ti.tid', $tid, '=')
-    ->innerJoin('url_alias', 'u', 'CONCAT("node/", n.nid) = u.source')
     ->fields('n', array('nid'))
     ->fields('u', array('alias'))
+    ->join('taxonomy_index', 'ti', 'ti.nid = n.nid')
+    ->join('url_alias', 'u', 'CONCAT("node/", n.nid) = u.source')
+    ->condition('n.type', 'closedquestion', '=')
+    ->condition('n.nid', $preqid, 'NOT IN')
+    ->condition('ti.tid', $tid, '=')
     ->orderRandom()
     ->range(0,1)
     ->execute()
