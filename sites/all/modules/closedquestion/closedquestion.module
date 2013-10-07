@@ -1031,18 +1031,20 @@ function get_random_question($tid) {
         }
     }
 
-    $return = db_select('node', 'n')
-    ->addField('n', 'nid', 'nid')
-    ->addField('u', 'alias', 'alias')
+    $query = db_select('node', 'n')
     ->join('taxonomy_index', 'ti', 'ti.nid = n.nid')
-    ->join('url_alias', 'u', 'CONCAT("node/", n.nid) = u.source')
-    ->condition('n.type', 'closedquestion', '=')
-    ->condition('n.nid', $preqid, 'NOT IN')
-    ->condition('ti.tid', $tid, '=')
-    ->orderRandom()
-    ->range(0,1)
-    ->execute()
-    ->fetchAssoc();
+    ->join('url_alias', 'u', 'CONCAT("node/", n.nid) = u.source');
+    
+    $return = $query
+    		  ->fields('n', array('nid'))
+    		  ->fields('u', array('alias'))
+    		  ->condition('n.type', 'closedquestion', '=')
+    		  ->condition('n.nid', $preqid, 'NOT IN')
+    		  ->condition('ti.tid', $tid, '=')
+    		  ->orderRandom()
+    		  ->range(0,1)
+    		  ->execute()
+    		  ->fetchAssoc();
 
     return $return;
 }
