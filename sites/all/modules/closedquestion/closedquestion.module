@@ -1032,8 +1032,8 @@ function get_random_question($tid) {
     }
 
     $return = db_select('node', 'n')
-    ->fields('n', array('nid'))
-    ->fields('u', array('alias'))
+    ->addField('n', 'nid', 'nid')
+    ->addField('u', 'alias', 'alias')
     ->join('taxonomy_index', 'ti', 'ti.nid = n.nid')
     ->join('url_alias', 'u', 'CONCAT("node/", n.nid) = u.source')
     ->condition('n.type', 'closedquestion', '=')
