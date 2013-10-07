@@ -1031,9 +1031,9 @@ function get_random_question($tid) {
         }
     }
 
-    $query = db_select('node', 'n');
+    $query = db_select('node', 'n')
     		->fields('n', array('nid'))
-    		->fields('u', array('alias'))
+    		->fields('u', array('alias'));
     $query->innerJoin('taxonomy_index', 'ti', 'ti.nid = n.nid');
     $query->innerJoin('url_alias', 'u', 'CONCAT("node/", n.nid) = u.source');
     
