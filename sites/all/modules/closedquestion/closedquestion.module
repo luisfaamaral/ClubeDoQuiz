@@ -1092,7 +1092,7 @@ function update_day_question($uid) {
     ))
     ->expression('qnumber', 'qnumber + 1');
     
-    var_dump($r);exit;
+    print (string)$r;exit;
 }
 
 function closedquestion_get_next_question () {
