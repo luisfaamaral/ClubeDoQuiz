@@ -1073,8 +1073,8 @@ function update_question_user($uid, $qID) {
     db_merge('question_accessed')
     ->key(array('uid' => $uid))
     ->fields(array(
-        'qid' => $qID
-        'qtimes' => '1'
+        'qid' => $qID,
+        'qtimes' => '1',
     ))
     ->expression('qtimes', 'qtimes + :inc', array(':inc' => 1))
     ->execute();
@@ -1087,8 +1087,8 @@ function update_day_question($uid) {
     db_merge('day_question_queue')
     ->key(array('uid' => $uid))
     ->fields(array(
-        'date' => date("y-m-d")
-        'qnumber' => '1'
+        'date' => date("y-m-d"),
+        'qnumber' => '1',
     ))
     ->expression('qnumber', 'qnumber + :inc', array(':inc' => 1))
     ->execute();
@@ -1120,8 +1120,14 @@ function closedquestion_get_next_question () {
       		update_last_access($user->uid, $newnid, 0, "", "", "4");  
 		} else {
       		// question accessed but not answered yet. Get path of this question.
-      		$query = "SELECT u.alias FROM {node} n, {url_alias} u WHERE `type` = 'closedquestion' and `nid` ='". $qid ."' and CONCAT('node/', n.`nid`) = u.`source`";
-      		$result = db_query($query)->fetchObject();
+      		$result = db_select('node', 'n')
+      				 ->leftJoin('url_alias', 'u', 'CONCAT("node/", n.nid) = u.source')
+      				 ->fields('u', array(alias))
+      				 ->condition('n.type', 'closedquestion', '=')
+      				 ->condition('n.nid', $qid, '=')
+      				 ->execute()
+      				 ->fetchAssoc();
+      				 
       		$newpath = $result->alias;  
     	}
     
