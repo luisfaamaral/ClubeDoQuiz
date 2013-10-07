@@ -1056,9 +1056,9 @@ function update_user_score($uid, $correct) {
     db_merge('ranking')
     ->key(array('uid' => $uid))
     ->fields(array(
-        'qtotal' => '1'
-        'qcorrect' => $correct
-        'ptotal' => $pontos
+        'qtotal' => '1',
+        'qcorrect' => $correct,
+        'ptotal' => $pontos,
     ))
     ->expression('qtotal', 'qtotal + :inc', array(':inc' => 1))
     ->expression('qcorrect', 'qcorrect + :inc', array(':inc' => 1))
