@@ -1084,7 +1084,7 @@ function update_question_user($uid, $qID) {
 * Update number of question/day
 */
 function update_day_question($uid) {
-    db_merge('day_question_queue')
+    $r = db_merge('day_question_queue')
     ->key(array('uid' => $uid))
     ->fields(array(
         'date' => date("y-m-d"),
@@ -1092,6 +1092,8 @@ function update_day_question($uid) {
     ))
     ->expression('qnumber', 'qnumber + 1')
     ->execute();
+    
+    var_dump($r);exit;
 }
 
 function closedquestion_get_next_question () {
