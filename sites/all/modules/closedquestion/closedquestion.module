@@ -1010,7 +1010,7 @@ function get_random_question($tid) {
              ->condition('uid', $user->uid, '=')
              ->execute()
              ->fetchObject();
-    var_dump($result->preqid);exit;
+
     $preqid = "";
     
     // if we dont have row in database
@@ -1043,7 +1043,6 @@ function get_random_question($tid) {
     		  ->condition('tid', $tid, '=')
     		  ->orderRandom()
     		  ->range(0,1);
-    var_dump($return->__toString());exit;
 
     return $return;
 }
