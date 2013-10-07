@@ -1014,7 +1014,7 @@ function get_random_question($tid) {
     $preqid = "";
     
     // if we dont have row in database
-    if ( !empty($result) ) {
+    if ( empty($result) ) {
         $msg = "GetRandomQuestion:: ". date('Ymdgi') .":: User: ". $user->uid ." - Invalid/Empty preqid.";
     
         db_insert('logs')
@@ -1038,9 +1038,9 @@ function get_random_question($tid) {
     $return = $query
     		  ->fields('n', array('nid'))
     		  ->fields('u', array('alias'))
-    		  ->condition('n.type', 'closedquestion', '=')
-    		  ->condition('n.nid', $preqid, 'NOT IN')
-    		  ->condition('ti.tid', $tid, '=')
+    		  ->condition('type', 'closedquestion', '=')
+    		  ->condition('nid', $preqid, 'NOT IN')
+    		  ->condition('tid', $tid, '=')
     		  ->orderRandom()
     		  ->range(0,1);
     var_dump($return->__toString());exit;
