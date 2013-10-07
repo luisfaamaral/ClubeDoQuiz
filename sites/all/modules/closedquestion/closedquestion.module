@@ -1037,7 +1037,7 @@ function get_random_question($tid) {
     		->fields('n', array('nid'))
     		->fields('u', array('alias'));
     $query->innerJoin('taxonomy_index', 'ti', 'ti.nid = n.nid');
-    $query->innerJoin('url_alias', 'u', 'CONCAT("node/", n.nid) = u.source');
+    $query->innerJoin('url_alias', 'u', "CONCAT('node/', n.nid) = u.source");
     
     $return = $query
     		  ->condition('n.type', 'closedquestion', '=')
