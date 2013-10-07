@@ -879,9 +879,6 @@ function closedquestion_update_score () {
         $res = avoid_back_page_sql($qID);
     }
 
-    // update number of question answered in the day
-    update_day_question($user->uid);
-  
     if ($res) {
         $html = "Quest‹o j‡ respondida. Os pontos n‹o foram computados.";
     } else {
@@ -913,7 +910,13 @@ function closedquestion_update_score () {
 
     // update last access
     update_last_access($user->uid, NULL, 1, $qID);
+    
+    // update number of times the qid was answered
+    update_question_user($user->uid, $qID);
   
+    // update number of question answered in the day
+    update_day_question($user->uid);
+      
     drupal_json_output(array('html' => $html, 'questionAnswered' => $questionAnswered));
 }
 
@@ -1047,7 +1050,11 @@ function get_random_question($tid) {
     		  ->range(0,1)
     		  ->execute()
     		  ->fetchObject();
-
+	
+	if ( empty($return) || is_null($return) || $return=="" ) {
+		
+	}
+	
     return $return;
 }
 
