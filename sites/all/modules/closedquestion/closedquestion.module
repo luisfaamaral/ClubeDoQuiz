@@ -1085,9 +1085,11 @@ function update_question_user($uid, $qID) {
 */
 function update_day_question($uid) {
     $r = db_merge('day_question_queue')
-    ->key(array('uid' => $uid))
+    ->key(array(
+    	'uid' => $uid, 
+    	'date' => date("y-m-d")
+    ))
     ->fields(array(
-        'date' => date("y-m-d"),
         'qnumber' => '1',
     ))
     ->expression('qnumber', 'qnumber + 1')
