@@ -1030,7 +1030,8 @@ function get_random_question($tid) {
             $preqidStt = " and n.`nid` NOT IN (". $preqid .")";
         }
     }
-
+	
+	var_dump($preqid);exit;
     $query = db_select('node', 'n')
     		->fields('n', array('nid'))
     		->fields('u', array('alias'));
