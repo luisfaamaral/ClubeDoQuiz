@@ -962,7 +962,7 @@ function update_last_access($uid, $newqid, $status, $qid) {
                     'qid' => $newqid,
                     'status' => $status,
                  ))
-          ->execute();
+          		->execute();
     } else if ( is_null($newqid) || $newqid=="" ) {
         // old qID with status 1
         $msg = "UpdateLastAccess:: ". date(Ymdgi) .":: Question Answered: User: ". $uid ." - qID: ". $qid;
@@ -1140,13 +1140,13 @@ function closedquestion_avoid_back_page() {
   	//check if this question has already been answered
   	$res = avoid_back_page_sql($qID);
   
-  	drupal_json_output(array('forward' => $res));    
+  	drupal_json_output(array('forward' => $res));
 }
 
 function avoid_back_page_sql($qID) {
   	global $user;
   	
-  	$likeCondition = "%". $qID ."%"
+  	$likeCondition = "%". $qID ."%";
   	$result = db_select('last_access', 'la')
   			 ->fields('la', array('uid'))
   			 ->condition('uid', $user->uid, '=')
