@@ -1010,7 +1010,7 @@ function get_random_question($tid) {
              ->condition('uid', $user->uid, '=')
              ->execute()
              ->fetchAssoc();
-    
+    var_dump($result);exit;
     $preqid = "";
     
     // if we dont have row in database
