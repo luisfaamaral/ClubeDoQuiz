@@ -1091,7 +1091,7 @@ function update_day_question($uid) {
         'qnumber' => '1',
     ))
     ->expression('qnumber', 'qnumber + 1')
-    ->preExecute();
+    ->execute();
     
 }
 
