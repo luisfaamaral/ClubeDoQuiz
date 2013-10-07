@@ -867,7 +867,7 @@ function closedquestion_update_score () {
              ->fields('la', array('preqid'))
              ->condition('uid', $user->uid, '=')
              ->execute()
-             ->fetchAssoc();
+             ->fetchObject();
   
     $preqID = ""; 
     $res = 0;
@@ -898,7 +898,7 @@ function closedquestion_update_score () {
                  ->condition('uid', $user->uid, '=')
                  ->condition('date', date("y-m-d"), '=')
                  ->execute()
-                 ->fetchAssoc();
+                 ->fetchObject();
         
         $toAns = 15 - $result->qnumber;
   
@@ -928,7 +928,7 @@ function update_last_access($uid, $newqid, $status, $qid) {
     ->fields('la', array('preqid'))
     ->condition('uid', $uid, '=')
     ->execute()
-    ->fetchAssoc();
+    ->fetchObject();
 
     if (empty($result) || $result == "") {
         $preqid_dup = $qid .",";
@@ -1106,7 +1106,7 @@ function closedquestion_get_next_question () {
              ->fields('la', array('qid', 'status'))
              ->condition('uid', $user->uid, '=')
              ->execute()
-             ->fetchAssoc();
+             ->fetchObject();
   
   	// if we have last accessed question
   	if ( !empty($result) ) {
@@ -1130,7 +1130,7 @@ function closedquestion_get_next_question () {
       				 ->condition('n.type', 'closedquestion', '=')
       				 ->condition('n.nid', $qid, '=')
       				 ->execute()
-      				 ->fetchAssoc();
+      				 ->fetchObject();
       				 
       		$newpath = $result->alias;  
     	}
