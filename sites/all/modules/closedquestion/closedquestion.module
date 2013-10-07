@@ -1042,9 +1042,8 @@ function get_random_question($tid) {
     		  ->condition('n.nid', $preqid, 'NOT IN')
     		  ->condition('ti.tid', $tid, '=')
     		  ->orderRandom()
-    		  ->range(0,1)
-    		  ->execute()
-    		  ->fetchAssoc();
+    		  ->range(0,1);
+    var_dump($return->__toString());exit;
 
     return $return;
 }
