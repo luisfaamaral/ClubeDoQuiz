@@ -1036,8 +1036,8 @@ function get_random_question($tid) {
     $query->innerJoin('url_alias', 'u', 'CONCAT("node/", n.nid) = u.source');
     
     $return = $query
-    		  ->fields('n', array('nid'))
-    		  ->fields('u', array('alias'))
+    		  ->addField('n', 'nid', 'nid')
+    		  ->addField('u', 'alias', 'alias')
     		  ->condition('type', 'closedquestion', '=')
     		  ->condition('nid', $preqid, 'NOT IN')
     		  ->condition('tid', $tid, '=')
