@@ -807,81 +807,114 @@ function library_get_path($base_name, $filenames, $fallback) {
 
 /* Called by categorias page */
 function closedquestion_start_quiz() {
-  global $user;
+    global $user;
 
-  $cid = explode("#",arg(1));
-  $cid = $cid[1];
-  
-  // Update last_categorie_access status to 1
-  $query = "UPDATE {last_categorie_access} SET `status` = 1 WHERE `uid` = ". $user->uid;
-  $result = db_query($query);
-  
-  // Get random question based on the category chosen - $cid
-  $query = get_random_question($cid);
-  $result = db_query($query)->fetchObject();
-  $newpath = $result->alias;
-  $newnid = $result->nid;
+    if ( is_null(arg(1)) || arg(1)=="" ) {
+        $msg = "StartQuiz:: ". date(Ymdgi) .":: User: ". $user-uid ." - Empty category argument.";
+        
+        db_insert('logs')
+        ->fields(array(
+            'msg' => $msg
+        ))
+        ->execute();
+    } else {
+        $cid = explode("#",arg(1));
+        $cid = $cid[1];
+    
+        if ( is_null($cid) || $cid=="" ) {
+            $msg = "StartQuiz:: ". date(Ymdgi) .":: User: ". $user-uid ." - Invalid category argument.";
+        
+            db_insert('logs')
+            ->fields(array(
+                'msg' => $msg
+            ))
+            ->execute();
+        } else {
+            // Category already chosen - Setting access = 1
+            db_merge('last_categorie_access')
+            ->key(array(
+                'uid' => $user->uid
+            ))
+            ->fields(array(
+                'status' => 1
+            ))
+            ->execute();
+            
+            // Get random question based on the category chosen - $cid
+            $result = get_random_question($cid);
+            $newpath = $result->alias;
+            $newnid = $result->nid;
+        
+            // update last access with the new question id and status 0
+            update_last_access($user->uid, $newnid, 0, NULL);  
 
-  // update last access with the new question id and status 0
-  update_last_access($user->uid, $newnid, 0, NULL);  
-      
-  drupal_goto($newpath);   
+            drupal_goto($newpath);
+        }
+    }
 }
 
 /**
 * Submit from question page
 */
 function closedquestion_update_score () {
-  global $user;
+    global $user;
 
-  $qID = $_REQUEST['question_id'];
-  $feedback= $_REQUEST['feedback'];
+    $qID = $_REQUEST['question_id'];
+    $feedback= $_REQUEST['feedback'];
   
-  // get last access question
-  $query = "SELECT `preqid` FROM {last_access} WHERE `uid` = $user->uid";
-  $result = db_query($query)->fetchObject();
+    // get last access question
+    $result = db_select('last_access', 'la')
+             ->fields('la', array('preqid'))
+             ->condition('uid', $user->uid, '=')
+             ->execute()
+             ->fetchAssoc();
   
-  $preqID = ""; $res = 0;
-  if (!empty($result)) {
-    $preqID = $result->preqid;
+    $preqID = ""; 
+    $res = 0;
+  
+    if ( !empty($result) ) {
+        $preqID = $result->preqid;
 
-    //check if this question has already been answered
-    $res = avoid_back_page_sql($qID);
-  }
+        //check if this question has already been answered
+        $res = avoid_back_page_sql($qID);
+    }
 
-  // update number of question answered in the day
+    // update number of question answered in the day
     update_day_question($user->uid);
   
-  if ($res) {
-    $html = "QuestÃ£o jÃ¡ respondida. Os pontos nÃ£o foram computados.";
-  } else {
-    //update score
-    if ($feedback == "Resposta correta") {
-      update_user_score($user->uid, 1);
+    if ($res) {
+        $html = "Quest‹o j‡ respondida. Os pontos n‹o foram computados.";
     } else {
-      update_user_score($user->uid, 0);
+        //update score
+        if ($feedback == "Resposta correta") {
+            update_user_score($user->uid, 1);
+        } else {
+            update_user_score($user->uid, 0);
+        }
+  
+        // get number of questions answered in that day
+        $result = db_select('day_question_queue', 'dqq')
+                 ->fields('dqq', array('qnumber'))
+                 ->condition('uid', $user->uid, '=')
+                 ->condition('date', date("y-m-d"), '=')
+                 ->execute()
+                 ->fetchAssoc();
+        
+        $toAns = 15 - $result->qnumber;
+  
+        if ($toAns > 1) {
+            $html = "Ainda faltam ". $toAns ." quest&otilde;es para serem respondidas hoje."; 
+        } else if (toAns == 0) {
+            $html = url('quizcompleto', array('absolute' => TRUE));
+        } else {
+            $html = "Falta ". $toAns ." quest&atilde;o para ser respondida hoje.";
+        }   
     }
-  
-    // get number of questions answered in that day
-    $query = "SELECT `qnumber` FROM {day_question_queue} WHERE `uid` = '". $user->uid ."' and `date` = '". date("y-m-d") ."'";
-    $result = db_query($query)->fetchObject();
-    $qnumber = $result->qnumber;
-  
-    $toAns = 15 - $qnumber;
-  
-    if ($toAns > 1) {
-      $html = "Ainda faltam ". $toAns ." quest&otilde;es para serem respondidas hoje."; 
-    } else if (toAns == 0) {
-      $html = url('quizcompleto', array('absolute' => TRUE));
-    } else {
-      $html = "Falta ". $toAns ." quest&atilde;o para ser respondida hoje.";
-    }   
-  }
 
-  // update last access
-  update_last_access($user->uid, NULL, 1, $qID);
+    // update last access
+    update_last_access($user->uid, NULL, 1, $qID);
   
-  drupal_json_output(array('html' => $html, 'questionAnswered' => $questionAnswered));
+    drupal_json_output(array('html' => $html, 'questionAnswered' => $questionAnswered));
 }
 
 
@@ -890,169 +923,241 @@ function closedquestion_update_score () {
 * Update last access
 */
 function update_last_access($uid, $newqid, $status, $qid) {
-  // Select preqid list to avoid repeat question.
-  $query = "SELECT `preqid` FROM {last_access} WHERE `uid` = ". $uid;
-  $result = db_query($query)->fetchObject();
+    // Select preqid list to avoid repeat question.
+    $result = db_select('last_access', 'la')
+    ->fields('la', array('preqid'))
+    ->condition('uid', $uid, '=')
+    ->execute()
+    ->fetchAssoc();
 
-  if (empty($result) || $result == "") {
-    $preqid_dup = $qid .",";
-    $preqid = "";
-  } else {
-    $preqid = $result->preqid;
-    $preqid_dup = $preqid . $qid .",";  
-  }
+    if (empty($result) || $result == "") {
+        $preqid_dup = $qid .",";
+        $preqid = "";
+    } else {
+        $preqid = $result->preqid;
+        $preqid_dup = $preqid . $qid .",";  
+    }
   
-  if (is_null($qid)) { 
-    // new qID with status 0
-    $msg = "Update last access:: New Question: User: ". $uid ." - New qID: ". $newqid ." - Date: ". date("y-m-d H:i:s") ;
+    if ( is_null($qid) || $qid=="" ) { 
+        // new qID with status 0
+        $msg = "UpdateLastAccess:: ". date(Ymdgi) .":: New Question: User: ". $uid ." - New qID: ". $newqid;
+        
+        db_insert('logs')
+        ->fields(array(
+            'msg' => $msg
+        ))
+        ->execute();
     
-    $result = db_merge('last_access')
-          ->key(array('uid' => $uid))
-          ->fields(array(
-             'uid' => $uid,
-             'qid' => $newqid,
-             'status' => $status,
-             'preqid' => $preqid,
-          ))
-          ->updateFields(array(
-             'qid' => $newqid,
-             'status' => $status,
-          ))
+        $result = db_merge('last_access')
+                 ->key(array(
+                    'uid' => $uid)
+                 )
+                 ->fields(array(
+                    'uid' => $uid,
+                    'qid' => $newqid,
+                    'status' => $status,
+                    'preqid' => $preqid,
+                 ))
+                 ->updateFields(array(
+                    'qid' => $newqid,
+                    'status' => $status,
+                 ))
           ->execute();
-  } else if (is_null($newqid)) {
-    // old qID with status 1
-    $msg = "Update last access:: Question Answered: User: ". $uid ." - qID: ". $qid ." - Date: ". date("y-m-d H:i:s") ;
-    
-     $result = db_merge('last_access')
-          ->key(array('uid' => $uid))
-          ->fields(array(
-             'uid' => $uid,
-             'qid' => $qid,
-             'status' => $status,
-             'preqid' => $preqid,
-          ))
-          ->updateFields(array(
-             'preqid' => $preqid_dup,
-             'status' => $status,
-          ))
-          ->execute();
-  } 
+    } else if ( is_null($newqid) || $newqid=="" ) {
+        // old qID with status 1
+        $msg = "UpdateLastAccess:: ". date(Ymdgi) .":: Question Answered: User: ". $uid ." - qID: ". $qid;
+        
+        db_insert('logs')
+        ->fields(array(
+            'msg' => $msg
+        ))
+        ->execute();
+         
+        $result = db_merge('last_access')
+                 ->key(array('uid' => $uid))
+                 ->fields(array(
+                    'uid' => $uid,
+                    'qid' => $qid,
+                    'status' => $status,
+                    'preqid' => $preqid,
+                 ))
+                 ->updateFields(array(
+                    'preqid' => $preqid_dup,
+                    'status' => $status,
+                 ))
+                 ->execute();
+    } 
 }
 
 /**
 * Get random question
 */
 function get_random_question($tid) {
-  global $user;
+    global $user;
   
-  // new qID with status 0
-  $msg = "Get random question: User: ". $user->uid ." - Category: ". $tid ." - Date: ". date("y-m-d H:i:s") ;
-  
-  // Select preqid list to avoid repeat question.
-  $query = "SELECT `preqid` FROM {last_access} WHERE `uid` = ". $user->uid;
-  $result = db_query($query)->fetchObject();
-
-  // if we dont have row in database
-  if (empty($result)) {
-    $preqidStt = "";    
-  } else {
-    $preqid = $result->preqid;
+    // new qID with status 0
+    $msg = "GetRandomQuestion:: ". date(Ymdgi) .":: User: ". $user->uid ." - Category: ". $tid;
     
-    if (empty($preqid) || $preqid == "") {
-      $preqidStt = "";
+    db_insert('logs')
+    ->fields(array(
+        'msg' => $msg
+    ))
+    ->execute();
+    
+    // Select preqid list to avoid repeat question.
+    $result = db_select('last_access', 'la')
+             ->fields('la', array('preqid'))
+             ->condition('uid', $user->uid, '=')
+             ->execute()
+             ->fetchAssoc();
+    
+    $preqid = "";
+    
+    // if we dont have row in database
+    if ( !empty($result) ) {
+        $msg = "GetRandomQuestion:: ". date(Ymdgi) .":: User: ". $user->uid ." - Invalid/Empty preqid.";
+    
+        db_insert('logs')
+        ->fields(array(
+            'msg' => $msg
+        ))
+        ->execute();
     } else {
-      $preqid = substr($preqid, 0, strlen($preqid) - 1);
-      $preqidStt = " and n.`nid` NOT IN (". $preqid .")";
+        $preqid = $result->preqid;
+    
+        if ( !empty($preqid) && $preqid!="" ) {
+            $preqid = substr($preqid, 0, strlen($preqid) - 1);
+            $preqidStt = " and n.`nid` NOT IN (". $preqid .")";
+        }
     }
-  }
 
-  $query = "SELECT n.nid, u.alias FROM {node} n, {url_alias} u, {taxonomy_index} ti WHERE `type` = 'closedquestion' ". $preqidStt ." and CONCAT('node/', n.`nid`) = u.`source` and ti.`nid` = n.`nid` and ti.`tid` = ". $tid ." ORDER BY RAND() LIMIT 1";
+    $return = db_select('node', 'n')
+    ->innerJoin('taxonomy_index', 'ti', 'ti.nid = n.nid')
+    ->innerJoin('url_alias', 'u', 'CONCAT('node/', n.nid) = u.source')
+    ->fields('n', array('nid'))
+    ->fields('u', array('alias'))
+    ->condition('n.type', 'closedquestion', '=')
+    ->condition('n.nid', $preqid, 'NOT IN')
+    ->condition('ti.tid', $tid, '=')
+    ->orderRandom()
+    ->range(0,1)
+    ->execute()
+    ->fetchAssoc();
 
-  return $query;
+    return $return;
 }
 
 /**
 * Update user score
 */
 function update_user_score($uid, $correct) {
-  $pontos = $correct * 5;
-  $query = "INSERT INTO {ranking}(`uid`, `qtotal`, `qcorrect`, `ptotal`) VALUES ('". $uid ."','1','". $correct ."','". $pontos ."') ON DUPLICATE KEY UPDATE `qtotal`= `qtotal` + 1, `qcorrect`= `qcorrect` + ". $correct .", `ptotal` = `ptotal` + ". $pontos;
-  $result = db_query($query);
+    $pontos = $correct * 5;
+  
+    db_merge('ranking')
+    ->key(array('uid' => $uid))
+    ->fields(array(
+        'qtotal' => '1'
+        'qcorrect' => $correct
+        'ptotal' => $pontos
+    ))
+    ->expression('qtotal', 'qtotal + :inc', array(':inc' => 1))
+    ->expression('qcorrect', 'qcorrect + :inc', array(':inc' => 1))
+    ->expression('ptotal', 'ptotal  + :inc', array(':inc' => 1))
+    ->execute();
 }
 
 /**
 * Update question accessed
 */
 function update_question_user($uid, $qID) {
-  $query = "INSERT INTO {question_accessed} (`uid`, `qid`, `qtimes`) VALUES ('". $uid ."','". $qID ."','1') ON DUPLICATE KEY UPDATE `qtimes` = `qtimes` + 1";
-  $result = db_query($query);
+    db_merge('question_accessed')
+    ->key(array('uid' => $uid))
+    ->fields(array(
+        'qid' => $qID
+        'qtimes' => '1'
+    ))
+    ->expression('qtimes', 'qtimes + :inc', array(':inc' => 1))
+    ->execute();
 }
 
 /**
 * Update number of question/day
 */
 function update_day_question($uid) {
-  $query = "INSERT INTO {day_question_queue} (`uid`, `date`, `qnumber`) VALUES ('". $uid ."', '". date("y-m-d") ."', '1') ON DUPLICATE KEY UPDATE `qnumber` = `qnumber` + 1";
-  $result = db_query($query);
+    db_merge('day_question_queue')
+    ->key(array('uid' => $uid))
+    ->fields(array(
+        'date' => date("y-m-d")
+        'qnumber' => '1'
+    ))
+    ->expression('qnumber', 'qnumber + :inc', array(':inc' => 1))
+    ->execute();
 }
 
 function closedquestion_get_next_question () {
-  global $user;
+  	global $user;
   
-  // get last access question
-  $query = "SELECT `qid`, `status` FROM {last_access} WHERE `uid` = $user->uid";
-  $result = db_query($query)->fetchObject();
+	// get last access question
+  	$result = db_select('last_access','la')
+             ->fields('la', array('qid', 'status'))
+             ->condition('uid', $user->uid, '=')
+             ->execute()
+             ->fetchAssoc();
   
-  // if we have last accessed question
-  if ( !empty($result) ) {
-    $status = $result->status;
-    $qid = $result->qid;
+  	// if we have last accessed question
+  	if ( !empty($result) ) {
+    	$status = $result->status;
+    	$qid = $result->qid;
       
-    // question already answered. get next question.
-    if ( $status == "1" ) {
-      // get next randomic question
-      $query = get_random_question("");
-      $result = db_query($query)->fetchObject();
-      $newpath = $result->alias;
-      $newnid = $result->nid;
+    	// question already answered. get next question.
+    	if ( $status == "1" ) {
+      		// get next randomic question
+      		$result = get_random_question("");
+      		$newpath = $result->alias;
+      		$newnid = $result->nid;
       
-      // update last access
-      update_last_access($user->uid, $newnid, 0, "", "", "4");  
-    } else {
-      // question accessed but not answered yet. Get path of this question.
-      $query = "SELECT u.alias FROM {node} n, {url_alias} u WHERE `type` = 'closedquestion' and `nid` ='". $qid ."' and CONCAT('node/', n.`nid`) = u.`source`";
-      $result = db_query($query)->fetchObject();
-      $newpath = $result->alias;  
-    }
-  }
-  
-  // return next question path
-  drupal_json_output(array('url' => url($newpath, array('absolute' => TRUE))));
+      		// update last access
+      		update_last_access($user->uid, $newnid, 0, "", "", "4");  
+		} else {
+      		// question accessed but not answered yet. Get path of this question.
+      		$query = "SELECT u.alias FROM {node} n, {url_alias} u WHERE `type` = 'closedquestion' and `nid` ='". $qid ."' and CONCAT('node/', n.`nid`) = u.`source`";
+      		$result = db_query($query)->fetchObject();
+      		$newpath = $result->alias;  
+    	}
+    
+    	// return next question path
+		drupal_json_output(array('url' => url($newpath, array('absolute' => TRUE))));
+  	}
 }
 
 /**
 * BACK PAGE HANDLE
 */
 function closedquestion_avoid_back_page() {
-  global $user;
-  $qID = $_REQUEST['question_id'];
+  	global $user;
+  	$qID = $_REQUEST['question_id'];
   
-  //check if this question has already been answered
-  $res = avoid_back_page_sql($qID);
+  	//check if this question has already been answered
+  	$res = avoid_back_page_sql($qID);
   
-  drupal_json_output(array('forward' => $res));    
+  	drupal_json_output(array('forward' => $res));    
 }
 
 function avoid_back_page_sql($qID) {
-  global $user;
-  $query = "SELECT count(*) as tot FROM {last_access} WHERE `uid` = $user->uid and `preqid` like '%,". $qID .",%'";
-  $result = db_query($query)->fetchObject();
+  	global $user;
+  	
+  	$likeCondition = "%". $qID ."%"
+  	$result = db_select('last_access', 'la')
+  			 ->fields('la', array('uid'))
+  			 ->condition('uid', $user->uid, '=')
+  			 ->condition('preqid', $likeCondition, 'LIKE')
+  			 ->execute();
   
-  if (!empty($result)) {
-    return $result->tot;
-  } else {
-    return 0;
-  } 
+  	if ( !empty($result) ) {
+    	return $result->rowCount();
+  	} else {
+    	return 0;
+  	} 
 }
 
 /**
