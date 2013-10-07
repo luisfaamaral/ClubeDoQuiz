@@ -1060,9 +1060,9 @@ function update_user_score($uid, $correct) {
         'qcorrect' => $correct,
         'ptotal' => $pontos,
     ))
-    ->expression('qtotal', 'qtotal + :inc', array(':inc' => 1))
-    ->expression('qcorrect', 'qcorrect + :inc', array(':inc' => 1))
-    ->expression('ptotal', 'ptotal  + :inc', array(':inc' => 1))
+    ->expression('qtotal', 'qtotal + 1')
+    ->expression('qcorrect', 'qcorrect + 1')
+    ->expression('ptotal', 'ptotal  + 1')
     ->execute();
 }
 
@@ -1076,7 +1076,7 @@ function update_question_user($uid, $qID) {
         'qid' => $qID,
         'qtimes' => '1',
     ))
-    ->expression('qtimes', 'qtimes + :inc', array(':inc' => 1))
+    ->expression('qtimes', 'qtimes + 1')
     ->execute();
 }
 
@@ -1090,7 +1090,7 @@ function update_day_question($uid) {
         'date' => date("y-m-d"),
         'qnumber' => '1',
     ))
-    ->expression('qnumber', 'qnumber + :inc', array(':inc' => 1))
+    ->expression('qnumber', 'qnumber + 1')
     ->execute();
 }
 
