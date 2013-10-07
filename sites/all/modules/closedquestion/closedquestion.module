@@ -1090,8 +1090,7 @@ function update_day_question($uid) {
         'date' => date("y-m-d"),
         'qnumber' => '1',
     ))
-    ->expression('qnumber', 'qnumber + 1')
-    ->execute();
+    ->expression('qnumber', 'qnumber + 1');
     
     var_dump($r);exit;
 }
