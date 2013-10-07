@@ -1031,7 +1031,8 @@ function get_random_question($tid) {
         }
     }
 	
-	var_dump($preqid);exit;
+	$preqid = explode(",", $preqid);
+	
     $query = db_select('node', 'n')
     		->fields('n', array('nid'))
     		->fields('u', array('alias'));
