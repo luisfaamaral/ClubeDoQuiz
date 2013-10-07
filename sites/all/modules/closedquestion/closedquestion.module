@@ -1090,9 +1090,9 @@ function update_day_question($uid) {
         'date' => date("y-m-d"),
         'qnumber' => '1',
     ))
-    ->expression('qnumber', 'qnumber + 1');
+    ->expression('qnumber', 'qnumber + 1')
+    ->preExecute();
     
-    print (string)$r;exit;
 }
 
 function closedquestion_get_next_question () {
