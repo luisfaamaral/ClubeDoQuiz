@@ -80,6 +80,8 @@ div#main div#block-system-main div.content span.submitted {display: none;}
 
 /* Complete Quiz */
 body.page-node-38 h1.page-title {display: none;}
+body.page-node-38 div#campeonato_quiz { text-align: center;margin-top: 15px; }
+body.page-node-38 div#campeonato_quiz img { border: none; }
 
 /* Block ranking */
 div#block-block-1 h2 {display: none;}
