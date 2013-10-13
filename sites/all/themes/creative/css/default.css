@@ -95,12 +95,17 @@ body.front.logged-in div#block-block-1 {margin-top: 0px;}
 
 /* Block Patrocinio */
 div#block-views-patrocinio-block div.field-content p {font-size: 11px;text-align: center;}
+div#block-views-patrocinio-block div.field-content { width: 200px;height: 100px; }
+div#block-views-patrocinio-block div.field-content img { max-width: 200px;max-height: 100px; }
 div#block-views-patrocinio-block h2 {display: none;}
 div#footer-bottom {margin: auto;width: auto;}
+div#footer-bottom div#footer-one { height: 90px;width: 100%;margin-top: 15px; }
 div#block-views-patrocinio-block div.view-content {margin-left: 21px;padding-top: 12px;}
 div#footer-bottom {background: url("../images/header-bg.jpg") repeat-x scroll left bottom transparent;margin-bottom: -30px;}
-div#block-views-patrocinio-block div.views-row {display: inline-block;margin-left: 10px;}
+div#block-views-patrocinio-block div.views-row {display: inline-block;margin-left: 10px;float: left;}
 div#block-views-patrocinio-block div.views-row img {margin-left: 20%}
+div#block-views-patrocinio-block div.views-row div.views-field-field-banner-image { text-align: center;margin-left: 10px; }
+
 
 /* Block Participar */
 div#block-block-2 h2 {display: none;}
