@@ -1085,6 +1085,8 @@ function update_user_score($uid, $correct) {
         	'ptotal' => $pontos,
     	))
     	->expression('qtotal', 'qtotal + 1')
+		->expression('qcorrect', 'qcorrect + 0')
+    	->expression('ptotal', 'ptotal  + 0')
     	->execute();
 	}
 }
