@@ -58,7 +58,7 @@ function closedquestion_init() {
       if (!empty($result)) {
         $tot = $result->qnumber;
     
-        if ($tot == 0) {
+        if ($tot == -1) {
           drupal_goto(url("quizcompleto", array('absolute' => TRUE)));
         }
       }
@@ -897,11 +897,11 @@ function closedquestion_update_score () {
                  ->execute()
                  ->fetchObject();
         
-        $toAns = $result->qnumber - 1;
+        $toAns = $result->qnumber;
   
         if ($toAns > 1) {
             $html = "Ainda faltam ". $toAns ." quest&otilde;es para serem respondidas hoje."; 
-        } else if (toAns == 0) {
+        } else if (toAns == -1) {
             $html = url('quizcompleto', array('absolute' => TRUE));
         } else {
             $html = "Falta ". $toAns ." quest&atilde;o para ser respondida hoje.";
@@ -1119,7 +1119,7 @@ function update_day_question($uid) {
     	'date' => date("y-m-d")
     ))
     ->fields(array(
-        'qnumber' => '16',
+        'qnumber' => '14',
     ))
     ->expression('qnumber', 'qnumber - 1')
     ->execute();
