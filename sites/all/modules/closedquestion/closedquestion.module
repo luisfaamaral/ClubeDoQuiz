@@ -1119,7 +1119,7 @@ function update_day_question($uid) {
     	'date' => date("y-m-d")
     ))
     ->fields(array(
-        'qnumber' => '14',
+        'qnumber' => '16',
     ))
     ->expression('qnumber', 'qnumber - 1')
     ->execute();
