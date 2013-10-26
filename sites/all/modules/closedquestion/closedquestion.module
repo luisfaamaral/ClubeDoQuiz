@@ -58,7 +58,7 @@ function closedquestion_init() {
       if (!empty($result)) {
         $tot = $result->qnumber;
     
-        if ($tot >= 15) {
+        if ($tot == 0) {
           drupal_goto(url("quizcompleto", array('absolute' => TRUE)));
         }
       }
@@ -897,7 +897,7 @@ function closedquestion_update_score () {
                  ->execute()
                  ->fetchObject();
         
-        $toAns = 15 - $result->qnumber - 1;
+        $toAns = $result->qnumber;
   
         if ($toAns > 1) {
             $html = "Ainda faltam ". $toAns ." quest&otilde;es para serem respondidas hoje."; 
@@ -1119,9 +1119,9 @@ function update_day_question($uid) {
     	'date' => date("y-m-d")
     ))
     ->fields(array(
-        'qnumber' => '1',
+        'qnumber' => '15',
     ))
-    ->expression('qnumber', 'qnumber + 1')
+    ->expression('qnumber', 'qnumber - 1')
     ->execute();
     
 }
@@ -1213,9 +1213,9 @@ function sudoku_check_result() {
     $resposta = $node->field_resposta['und'][0]['value'];
 
     if ($resultado == $resposta) {
-      drupal_json_output(array('html' => "<span>ParabÃ©ns! VocÃª conseguiu.</span>"));
+      drupal_json_output(array('html' => "<span>Parabns! Voc conseguiu.</span>"));
     } else {
-      drupal_json_output(array('html' => "<span class='error'>Ops! Algum valor estÃ¡ incorreto.</span>"));
+      drupal_json_output(array('html' => "<span class='error'>Ops! Algum valor est‡ incorreto.</span>"));
     }
   }
 }
