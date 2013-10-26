@@ -1096,8 +1096,13 @@ function update_user_score($uid, $correct) {
 */
 function update_question_user($uid, $qID) {
     db_merge('question_accessed')
-    ->key(array('uid' => $uid, 'qid' => $qID))
+    ->key(array(
+		'uid' => $uid, 
+		'qid' => $qID)
+	)
     ->fields(array(
+		'uid' => $uid, 
+		'qid' => $qID
         'qtimes' => '1',
     ))
     ->expression('qtimes', 'qtimes + 1')
