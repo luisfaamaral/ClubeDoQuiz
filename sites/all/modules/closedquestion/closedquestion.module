@@ -889,6 +889,15 @@ function closedquestion_update_score () {
             update_user_score($user->uid, 0);
         }
   
+		// update last access
+    	update_last_access($user->uid, NULL, 1, $qID);
+    
+    	// update number of times the qid was answered
+    	update_question_user($user->uid, $qID);
+  
+    	// update number of question answered in the day
+    	update_day_question($user->uid);
+
         // get number of questions answered in that day
         $result = db_select('day_question_queue', 'dqq')
                  ->fields('dqq', array('qnumber'))
@@ -901,22 +910,13 @@ function closedquestion_update_score () {
   
         if ($toAns > 1) {
             $html = "Ainda faltam ". $toAns ." quest&otilde;es para serem respondidas hoje."; 
-        } else if (toAns == -1) {
+        } else if (toAns == 0) {
             $html = url('quizcompleto', array('absolute' => TRUE));
         } else {
             $html = "Falta ". $toAns ." quest&atilde;o para ser respondida hoje.";
         }   
     }
 
-    // update last access
-    update_last_access($user->uid, NULL, 1, $qID);
-    
-    // update number of times the qid was answered
-    update_question_user($user->uid, $qID);
-  
-    // update number of question answered in the day
-    update_day_question($user->uid);
-      
     drupal_json_output(array('html' => $html, 'questionAnswered' => $questionAnswered));
 }
 
