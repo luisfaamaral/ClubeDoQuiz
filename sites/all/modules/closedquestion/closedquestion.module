@@ -897,7 +897,7 @@ function closedquestion_update_score () {
                  ->execute()
                  ->fetchObject();
         
-        $toAns = $result->qnumber;
+        $toAns = $result->qnumber - 1;
   
         if ($toAns > 1) {
             $html = "Ainda faltam ". $toAns ." quest&otilde;es para serem respondidas hoje."; 
