@@ -1102,7 +1102,7 @@ function update_question_user($uid, $qID) {
 	)
     ->fields(array(
 		'uid' => $uid, 
-		'qid' => $qID
+		'qid' => $qID,
         'qtimes' => '1',
     ))
     ->expression('qtimes', 'qtimes + 1')
