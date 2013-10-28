@@ -1190,9 +1190,10 @@ function avoid_back_page_sql($qID) {
   			 ->condition('uid', $user->uid, '=')
   			 ->condition('preqid', $likeCondition, 'LIKE')
   			 ->execute();
-    var_dump($result);exit;
+    
   	if ( !empty($result) && $result != "" ) {
-    	return $result->rowCount();
+    	var_dump($result->rowCount(););exit;
+		return $result->rowCount();
   	} else {
     	return 0;
   	} 
