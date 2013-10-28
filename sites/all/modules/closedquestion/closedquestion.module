@@ -58,7 +58,7 @@ function closedquestion_init() {
       if (!empty($result)) {
         $tot = $result->qnumber;
     
-        if ($tot == -1) {
+        if ($tot == 0) {
           drupal_goto(url("quizcompleto", array('absolute' => TRUE)));
         }
       }
