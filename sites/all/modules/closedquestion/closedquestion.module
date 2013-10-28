@@ -907,10 +907,10 @@ function closedquestion_update_score () {
                  ->fetchObject();
         
         $toAns = $result->qnumber;
-        var_dump($toAns);exit;
+        
         if ($toAns > 1) {
             $html = "Ainda faltam ". $toAns ." quest&otilde;es para serem respondidas hoje."; 
-        } else if (toAns == 0) {
+        } else if ($toAns == 0) {
             $html = url('quizcompleto', array('absolute' => TRUE));
         } else {
             $html = "Falta ". $toAns ." quest&atilde;o para ser respondida hoje.";
