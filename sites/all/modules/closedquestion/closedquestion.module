@@ -1184,7 +1184,7 @@ function closedquestion_avoid_back_page() {
 function avoid_back_page_sql($qID) {
   	global $user;
   	
-  	$likeCondition = "%". $qID ."%";
+  	$likeCondition = "%,". $qID .",%";
   	$result = db_select('last_access', 'la')
   			 ->fields('la', array('uid'))
   			 ->condition('uid', $user->uid, '=')
@@ -1192,7 +1192,6 @@ function avoid_back_page_sql($qID) {
   			 ->execute();
     
   	if ( !empty($result) && $result != "" ) {
-    	var_dump($result->rowCount());exit;
 		return $result->rowCount();
   	} else {
     	return 0;
