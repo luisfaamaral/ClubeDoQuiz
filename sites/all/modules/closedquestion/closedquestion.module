@@ -1192,7 +1192,7 @@ function avoid_back_page_sql($qID) {
   			 ->execute();
     
   	if ( !empty($result) && $result != "" ) {
-    	var_dump($result->rowCount(););exit;
+    	var_dump($result->rowCount();exit;
 		return $result->rowCount();
   	} else {
     	return 0;
