@@ -1191,7 +1191,7 @@ function avoid_back_page_sql($qID) {
   			 ->condition('preqid', $likeCondition, 'LIKE')
   			 ->execute();
   
-  	if ( !empty($result) ) {
+  	if ( !empty($result) && $result != "" ) {
     	return $result->rowCount();
   	} else {
     	return 0;
